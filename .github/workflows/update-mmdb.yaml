@@ -20,7 +20,7 @@ jobs:
       
     - name: Download File
       run: |
-        curl -L -o server/db.mmdb https://mmdbcdn.posthog.net
+        wget2 -O server/db.mmdb https://mmdbcdn.posthog.net
 
     - name: Commit and Push
       uses: stefanzweifel/git-auto-commit-action@v5
