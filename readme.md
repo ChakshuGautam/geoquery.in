@@ -1,5 +1,5 @@
 <h1 align="center">GeoIP-JS</h1>
-<h2 align="center">Examples on how to do IP to Geolocation </h2>
+<h4 align="center">Examples on how to do IP to Geolocation </h4>
 
 #### Example
 ```js
