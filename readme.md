@@ -2,14 +2,14 @@
 <h4 align="center">Examples on how to do IP to Geolocation </h4>
 
 #### Example
-```js
-    var mmdbreader = require('maxmind-db-reader');
-    // open database
-    mmdbreader.open('./test.mmdb', function (err, countries) {
-        // get geodata
-        countries.getGeoData('2402:e280:3e09:eef:a9a7:a769:77d8:6c50', function (err, geodata) {
-            // log data :D
-            console.log(geodata);
-        });
-    });
+See [exmple](./server/app.js).
+
+#### API
+
+```sh
+curl https://geoip-wk3q.onrender.com/city/128.101.101.101
 ```
+
+#### Notes
+
+DB will remain updated automatically. Please create a ticket if you see some issues.
