@@ -1,5 +1,5 @@
 <h1 align="center">GeoIP-Service</h1>
-<h4 align="center">Examples on how to do IP to Geolocation </h4>
+<h4 align="center">Examples on how to do IP to Location Details </h4>
 
 #### Example
 See code example in the [server](./server/app.js) folder.
