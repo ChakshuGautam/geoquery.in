@@ -15,3 +15,8 @@ Works with both ipv4 and ipv6.
 #### Notes
 
 DB will remain updated automatically. Please create a ticket if you see some issues.
+
+
+#### Contribution Guide
+1. Please consider issues up from grabs.
+2. It will only be assigned with a PR.
