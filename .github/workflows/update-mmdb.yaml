@@ -26,4 +26,4 @@ jobs:
     - name: Commit and Push
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: Update temp.mmdb
+        commit_message: Update db.mmdb
