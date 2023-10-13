@@ -1,24 +1,22 @@
-import express from 'express';
 import { Reader } from '@maxmind/geoip2-node';
+import { Router } from '@stricjs/router';
 import * as fs from 'fs';
+import Bun from 'bun';
+
 const buffer = fs.readFileSync('./db.mmdb');
 const reader = Reader.openBuffer(buffer);
 
-const app = express();
+const app = new Router()
+  .get('/home', () => new Response(Bun.file(__dirname + '/www/index.html')))
+  .get('/city/:ip', (ctx) => {
+    const resp = reader.city(ctx.params.ip);
+    return new Response(JSON.stringify(resp));
+  });
 
-app.use(express.static('www'));
-
-app.get('/home', (req, res) => {
-    res.sendFile(__dirname + '/www/index.html');  // Always serve index.html
+app.use(404, () => {
+  return new Response(Bun.file(__dirname + '/www/404.html'))
 });
 
-app.get('/city/:ip', (req, res) => {
-    const city = reader.city(req.params.ip);
-    res.send(city);
-})
+app.port = (process.env.PORT || 3000);
 
-const port = process.env.PORT || 3000;
-
-app.listen(port, () => {
-    console.log(`Server is listening on port ${port}`);
-});
+export default app;
