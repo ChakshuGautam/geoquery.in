@@ -4,6 +4,18 @@
 #### Example
 See code example in the [server](./server/app.js) folder.
 
+#### Setup
+
+Install/Build
+```sh
+yarn
+```
+
+Start Server
+```sh
+node app.js
+```
+
 #### API
 
 ```sh
