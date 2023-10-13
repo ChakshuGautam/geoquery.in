@@ -1,0 +1,15 @@
+{
+  "name": "mmdb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ChakshuGautam",
+  "license": "ISC",
+  "dependencies": {
+    "maxmind-db-reader": "^0.2.1",
+    "mmdb-lib": "^2.0.2"
+  }
+}
