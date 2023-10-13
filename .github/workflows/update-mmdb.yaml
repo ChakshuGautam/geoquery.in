@@ -20,7 +20,7 @@ jobs:
       
     - name: Download File
       run: |
-        apt install wget2 -y
+        sudo apt install wget2 -y
         wget2 -O server/db.mmdb https://mmdbcdn.posthog.net
 
     - name: Commit and Push
