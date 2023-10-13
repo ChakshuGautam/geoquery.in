@@ -1,4 +1,4 @@
-<h1 align="center">GeoIP-JS</h1>
+<h1 align="center">GeoIP-Service</h1>
 <h4 align="center">Examples on how to do IP to Geolocation </h4>
 
 #### Example
