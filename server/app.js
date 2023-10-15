@@ -10,7 +10,7 @@ const app = new Router()
   .get('/home', () => new Response(Bun.file(__dirname + '/www/index.html')))
   .get('/city/:ip', (ctx) => {
     const resp = reader.city(ctx.params.ip);
-    return new Response(JSON.stringify(resp));
+    return Response.json(resp);
   });
 
 app.use(404, () => {
@@ -18,5 +18,6 @@ app.use(404, () => {
 });
 
 app.port = (process.env.PORT || 3000);
+app.hostname = '0.0.0.0';
 
-export default app;
+app.listen();
