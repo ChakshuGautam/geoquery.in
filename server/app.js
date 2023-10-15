@@ -7,7 +7,7 @@ const buffer = fs.readFileSync('./db.mmdb');
 const reader = Reader.openBuffer(buffer);
 
 const app = new Router()
-  .get('/home', () => new Response(Bun.file(__dirname + '/www/index.html')))
+  .get('/', () => new Response(Bun.file(__dirname + '/www/index.html')))
   .get('/city/:ip', (ctx) => {
     const resp = reader.city(ctx.params.ip);
     return Response.json(resp);
