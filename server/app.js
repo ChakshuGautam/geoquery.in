@@ -10,7 +10,7 @@ const app = new Router()
   .get('/home', () => new Response(Bun.file(__dirname + '/www/index.html')))
   .get('/city/:ip', (ctx) => {
     const resp = reader.city(ctx.params.ip);
-    return new Response(JSON.stringify(resp));
+    return new Response(JSON.stringify(resp)).json();
   });
 
 app.use(404, () => {
