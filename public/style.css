@@ -15,13 +15,13 @@ header {
 }
 
 .logo img {
-  height: 50px;
+  height: 25px;
 }
 
 nav ul {
   list-style: none;
   display: flex;
-  gap: 20px;
+  gap: 35px;
 }
 
 nav a {
@@ -68,4 +68,32 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+li a{
+  font-size: 15px;
+  color:  rgba(117,117,117,.8);
+}
+
+a:hover{
+  text-decoration: none;
+}
+
+.nav-box{
+  height: 35px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.b1{
+  color:  rgba(117,117,117,.8);
+}
+
+h2{
+  color:  rgba(117,117,117,.8);
+}
+.nav-box{
+  width: 83%
 }
