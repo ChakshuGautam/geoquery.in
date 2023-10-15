@@ -2,9 +2,9 @@ FROM oven/bun
 
 WORKDIR /usr/src/app
 
-COPY ./server .
+COPY . .
 
-COPY ./server/package*.json ./server/bun.lockb ./
+COPY ./package*.json ./bun.lockb ./
 RUN bun install
 
 ENV NODE_ENV production
