@@ -19,7 +19,7 @@ node app.js
 #### API
 
 ```sh
-curl https://geoip-wk3q.onrender.com/city/128.101.101.101
+curl https://geoip.samagra.io/city/128.101.101.101
 ```
 
 Works with both ipv4 and ipv6.
