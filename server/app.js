@@ -18,5 +18,6 @@ app.use(404, () => {
 });
 
 app.port = (process.env.PORT || 3000);
+app.hostname = '0.0.0.0';
 
-app.listen('0.0.0.0');
+app.listen();
