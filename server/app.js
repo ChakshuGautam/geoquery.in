@@ -43,8 +43,7 @@ const formatErrorResponse = (error,ip) => {
 }
 
 const app = new Router()
-//   .get('/', () => new Response(Bun.file(__dirname + '/www/index.html')))
-  .get('/', () => new Response(Bun.file('/Users/aryanmishra/Desktop/geoip/public/index.html')))
+  .get('/', () => new Response(Bun.file(__dirname + '/www/index.html')))
   .get('/city/:ip', (ctx) => {
     try {
       const resp = reader.city(ctx.params.ip);
