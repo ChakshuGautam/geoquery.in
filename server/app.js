@@ -2,10 +2,15 @@ import { Reader } from '@maxmind/geoip2-node';
 import { Router } from '@stricjs/router';
 import * as fs from 'fs';
 import Bun from 'bun';
+import express from 'express';
+import swagger from './util/swagger';
 
 const buffer = fs.readFileSync('./db.mmdb');
 const reader = Reader.openBuffer(buffer);
 
+const swaggerApp = express();
+
+swagger(swaggerApp);
 
 // format the success response data
 const formatSuccessResponse = (data) => {
@@ -77,4 +82,6 @@ app.use(404, () => {
 app.port = (process.env.PORT || 3000);
 app.hostname = '0.0.0.0';
 
+
+swaggerApp.listen(3001, () => console.log('Swagger listening on port 3000'))
 app.listen();

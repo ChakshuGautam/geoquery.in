@@ -13,6 +13,10 @@
   "dependencies": {
     "@maxmind/geoip2-node": "^4.2.0",
     "@stricjs/router": "^5.0.3",
+    "@types/swagger-jsdoc": "^6.0.1",
+    "@types/swagger-ui-express": "^4.1.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
     "bun": "^1.0.7",
     "express": "^4.18.2",
     "maxmind": "^4.3.16",
