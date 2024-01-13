@@ -6,6 +6,9 @@
   "name": "geoip",
   "module": "index.ts",
   "type": "module",
+  "workspaces": [
+    "server"
+  ],
   "devDependencies": {
     "bun-types": "latest"
   },
