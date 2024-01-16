@@ -4,16 +4,22 @@
 #### Example
 See code example in the [server](./server/app.js) folder.
 
-#### Setup
+#### Setup Server
+
+Make sure you have [`bun`](https://bun.sh/) installed.
+```sh
+curl -fsSL https://bun.sh/install | bash
+```
 
 Install/Build
 ```sh
-yarn
+bun install
 ```
 
 Start Server
 ```sh
-node app.js
+cd server
+bun app.js
 ```
 
 #### API
