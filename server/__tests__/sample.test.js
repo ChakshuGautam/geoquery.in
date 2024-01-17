@@ -1,9 +1,11 @@
 import request from 'supertest';
-import app from '../app.js';
+import { app } from '../app.js';
+
+const BASE_URL = `http://localhost:${app.port}`;
 
 describe('GET /', () => {
   it('should return the index.html page', async () => {
-    const response = await request(app).get('/');
+    const response = await fetch(BASE_URL);
     expect(response.status).toBe(200);
     expect(response.headers['content-type']).toContain('text/html');
   });
