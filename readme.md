@@ -6,14 +6,9 @@ See code example in the [server](./server/app.js) folder.
 
 #### Setup Server
 
-Make sure you have [`bun`](https://bun.sh/) installed.
+Run `./setup.sh`. This script will install bun and download required files to setup server
 ```sh
-curl -fsSL https://bun.sh/install | bash
-```
-
-Install/Build
-```sh
-bun install
+./setup.sh
 ```
 
 Start Server
