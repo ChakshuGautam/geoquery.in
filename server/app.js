@@ -5,15 +5,35 @@ import * as turf from '@turf/turf'
 import {Router} from '@stricjs/router';
 import * as fs from 'fs';
 import Bun from 'bun';
+import * as turf from '@turf/turf'
 import express from 'express';
 import swagger from './util/swagger';
 
-const buffer = fs.readFileSync('./db.mmdb');
+const buffer = fs.readFileSync(`${import.meta.dir}/db.mmdb`);
 const reader = Reader.openBuffer(buffer);
 
 const swaggerApp = express();
 
 swagger(swaggerApp);
+
+// Check if required geojson files exists
+const requiredGeoJsonFiles = [ "INDIA_DISTRICTS.geojson" ]
+const geoJsonFilesPath = `${import.meta.dir}/geojson-data`
+fs.readdir(geoJsonFilesPath, (err, files) => {
+  if (err) {
+    console.error("Error reading folder: ", err);
+    process.exit();
+  }
+
+  for (const requiredFile of requiredGeoJsonFiles) {
+    if (!files.includes(requiredFile)) {
+      console.error("Required GeoJson files not present");
+      process.exit();
+    }
+  }
+});
+
+const INDIA_DISTRICTS = JSON.parse(fs.readFileSync(`${geoJsonFilesPath}/INDIA_DISTRICTS.geojson`, 'utf8'));
 
 // format the success response data
 const formatSuccessResponse = (data) => {
@@ -82,55 +102,87 @@ function individualQuery(geoJSONPaths, coordinates) {
   }
 }
 
-const app = new Router()
-    .get('/', () => new Response(Bun.file(__dirname + '/www/index.html')))
-    .get('/city/:ip', (ctx) => {
-      try {
-        const resp = reader.city(ctx.params.ip);
-        return Response.json(formatSuccessResponse(resp));
-      } catch (error) {
-        return Response.json(formatErrorResponse(error, ctx.params.ip));
+export const app = new Router()
+  .get('/', () => new Response(Bun.file(__dirname + '/www/index.html')))
+  .get('/city/:ip', (ctx) => {
+    try {
+      const resp = reader.city(ctx.params.ip);
+      return Response.json(formatSuccessResponse(resp));
+    } catch (error) {
+      return Response.json(formatErrorResponse(error,ctx.params.ip));
+    }
+  })
+  .post('/city/batch', async (req) => {
+    try {
+      const { ips } = await req.json();  // Extract the 'ips' array from the request body
+  
+      // Create an array of promises, each promise resolves to the city corresponding to the IP address
+      const promises = ips.map(async (ip) => {
+        let response;
+        try {
+           response = reader.city(ip);
+           return formatSuccessResponse(response);
+        } catch (error) {
+          return formatErrorResponse(error,ip);
+        } 
+      });
+      // Wait for all promises to settle and collect the results
+      const results = await Promise.all(promises);
+  
+      return Response.json(results, { status: 200 });
+    } catch (error) {
+      return new Response('Error processing IP addresses', { status: 500 });
+    }
+  })
+  .get('/georev', (ctx) => {
+    try {
+      let url = new URL(ctx.url);
+      let latitude = url.searchParams.get('lat');
+      let longitude = url.searchParams.get('lon');
+      let resp = individualQuery(['/path/to/geojson/file'], [longitude, latitude])
+      return Response.json(formatGeorevSuccessResponse(resp));
+    } catch (error) {
+      return Response.json({
+        status: "fail",
+        error: error.name
+      })
+    }
+  })
+  .get('/location/centroid', async (ctx) => {
+    try {
+      let url = new URL(ctx.url);
+      let district = url.searchParams.get('district');
+      let distFeature, state;
+      for (const feature of INDIA_DISTRICTS.features) {
+        if (feature.properties.dtname.toLowerCase() === district.toLowerCase()) {
+          district = feature.properties.dtname;
+          state = feature.properties.stname;
+          distFeature = feature;
+        }
       }
-    })
-    .post('/city/batch', async (req) => {
-      try {
-        const {ips} = await req.json();  // Extract the 'ips' array from the request body
-
-        // Create an array of promises, each promise resolves to the city corresponding to the IP address
-        const promises = ips.map(async (ip) => {
-          let response;
-          try {
-            response = reader.city(ip);
-            return formatSuccessResponse(response);
-          } catch (error) {
-            return formatErrorResponse(error, ip);
-          }
-        });
-        // Wait for all promises to settle and collect the results
-        const results = await Promise.all(promises);
-
-        return Response.json(results, {status: 200});
-      } catch (error) {
-        return new Response('Error processing IP addresses', {status: 500});
+      if (!distFeature) throw new Error(`No district found with name: ${district}`);
+      let polygonFeature;
+      if (distFeature.geometry.type === 'Polygon') {
+        polygonFeature = turf.polygon(distFeature.geometry.coordinates);
+      } else {
+        polygonFeature = turf.multiPolygon(distFeature.geometry.coordinates);
       }
-    })
-    .get('/georev', (ctx) => {
-      try {
-        let url = new URL(ctx.url);
-        let latitude = url.searchParams.get('lat');
-        let longitude = url.searchParams.get('lon');
-        let resp = individualQuery(['/path/to/geojson/file'], [longitude, latitude])
-        return Response.json(formatGeorevSuccessResponse(resp));
-      } catch (error) {
+      const centroid = turf.centroid(polygonFeature);
+        const longitude = centroid.geometry.coordinates[0];
+        const latitude = centroid.geometry.coordinates[1];
         return Response.json({
-          status: "fail",
-          error: error.name
-        })
-      }
-    });
+          district,
+          state,
+          lon: longitude, 
+          lat: latitude,
+        }, { status : 200 }) 
+    } catch (error) {
+      return Response.json({ error: error.message }, { status: 404 });
+    }
+  });
 
 app.use(404, () => {
-  return new Response(Bun.file(__dirname + '/www/404.html'))
+  return new Response(Bun.file(import.meta.dir + '/www/404.html'))
 });
 
 app.port = (process.env.PORT || 3000);

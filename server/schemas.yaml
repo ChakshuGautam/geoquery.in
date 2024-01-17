@@ -195,3 +195,15 @@ components:
               type: string
             geo:
               type: string
+    
+    DistCentroidReponseObject:
+      type: object
+      properties:
+        district:
+          type: string
+        state:
+          type: string
+        lon:
+          type: number
+        lat:
+          type: number

@@ -20,6 +20,8 @@ bun install
 cd server/geojson-data
 
 curl -LO "https://github.com/datta07/INDIAN-SHAPEFILES/raw/master/INDIA/INDIA_DISTRICTS.geojson"
+curl -LO "://github.com/datta07/INDIAN-SHAPEFILES/raw/master/INDIA/INDIAN_SUB_DISTRICTS.geojson"
+curl -LO "https://github.com/datta07/INDIAN-SHAPEFILES/raw/master/INDIA/INDIA_STATES.geojson"
 
 # Changing PWD back to project root
 cd - > /dev/null

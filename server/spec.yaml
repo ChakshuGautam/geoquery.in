@@ -312,3 +312,22 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/GeoLocationResponseObject'
+
+  /location/centroid:
+    get:
+      description: 'Return pylygon centroid coordinates & state for given district in query'
+      parameters: 
+        - name: district
+          in: query
+          schema:
+            type: string
+          reqired: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistCentroidReponseObject'
+        '404':
+          desctiption: District Not Found
