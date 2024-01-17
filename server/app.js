@@ -1,7 +1,7 @@
 import {Reader} from '@maxmind/geoip2-node';
 // var geojsonRbush = require('geojson-rbush').default;
 import {default as geojsonRbush} from 'geojson-rbush';
-import {polygon, multiPolygon, point} from '@turf/turf';
+import {polygon, multiPolygon, point, booleanContains} from '@turf/turf';
 import {Router} from '@stricjs/router';
 import * as fs from 'fs';
 import Bun from 'bun';
@@ -55,10 +55,21 @@ const formatErrorResponse = (error, ip) => {
   }
 }
 
-// Initializing the tree
-let tree = geojsonRbush();
-const pickledTreeData = fs.readFileSync('./pickled_output.json', 'utf8');
-tree.fromJSON(JSON.parse(pickledTreeData));
+function individualQuery(geoJSONPaths, coordinates) {
+  for (let path of geoJSONPaths) {
+    const geoJSON = JSON.parse(fs.readFileSync(path, 'utf8'));
+    const turf_point = point(coordinates);
+
+    for (let feature of geoJSON.features) {
+      if (feature.geometry.type === 'Polygon') {
+        let poly = polygon(feature.geometry.coordinates, feature.properties);
+        if (booleanContains(poly, turf_point)) {
+          return poly.properties;
+        }
+      }
+    }
+  }
+}
 
 const app = new Router()
     .get('/', () => new Response(Bun.file(__dirname + '/www/index.html')))
@@ -97,13 +108,8 @@ const app = new Router()
         let url = new URL(ctx.url);
         let latitude = url.searchParams.get('lat');
         let longitude = url.searchParams.get('lon');
-        let co_ordinate = point([longitude, latitude]);
-        let georev = tree.search(co_ordinate);
-        if (georev.features.length > 0) {
-          georev.features.sort((a, b) =>  a.properties.Shape_Area - b.properties.Shape_Area);
-          let resp = georev.features[0].properties;
-          return Response.json(formatGeorevSuccessResponse(resp));
-        }
+        let resp = individualQuery(['/path/to/geojson/file'], [longitude, latitude])
+        return Response.json(formatGeorevSuccessResponse(resp));
       } catch (error) {
         return Response.json({
           status: "fail",

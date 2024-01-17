@@ -32,19 +32,6 @@ curl https://geoip.samagra.io/city/128.101.101.101
 curl https://geoip.samagra.io/georev?lat=28.7041&lon=77.1025
 ```
 
-### GeoRev Utilities
-
-To create the `pickled_output.json` use the `scripts/pickle_data.js`. Pass an array of geoJSON file paths to the 
-`buildTree` API and run the below commands, this will generate a `pickled_output.json` file in the `sever/` dir.
-
-```shell
-cd server/scripts
-node pickle_data.js
-```
-
-
-
-
 #### Notes
 
 DB will remain updated automatically. Please create a ticket if you see some issues.
