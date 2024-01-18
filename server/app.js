@@ -1,7 +1,7 @@
 import {Reader} from '@maxmind/geoip2-node';
 // var geojsonRbush = require('geojson-rbush').default;
 import {default as geojsonRbush} from 'geojson-rbush';
-import {polygon, multiPolygon, point, booleanContains} from '@turf/turf';
+import * as turf from '@turf/turf'
 import {Router} from '@stricjs/router';
 import * as fs from 'fs';
 import Bun from 'bun';
@@ -55,16 +55,27 @@ const formatErrorResponse = (error, ip) => {
   }
 }
 
+function isPointInMultiPolygon(multiPolygon, point) {
+  return multiPolygon.geometry.coordinates.some(polygonCoordinates => {
+    const poly = turf.polygon(polygonCoordinates);
+    return turf.booleanContains(poly, point);
+  });
+}
+
 function individualQuery(geoJSONPaths, coordinates) {
   for (let path of geoJSONPaths) {
     const geoJSON = JSON.parse(fs.readFileSync(path, 'utf8'));
-    const turf_point = point(coordinates);
+    const turf_point = turf.point(coordinates);
 
     for (let feature of geoJSON.features) {
       if (feature.geometry.type === 'Polygon') {
-        let poly = polygon(feature.geometry.coordinates, feature.properties);
-        if (booleanContains(poly, turf_point)) {
+        let poly = turf.polygon(feature.geometry.coordinates, feature.properties);
+        if (turf.booleanContains(poly, turf_point)) {
           return poly.properties;
+        }
+      } else if (feature.geometry.type === 'MultiPolygon') {
+        if (isPointInMultiPolygon(feature, turf_point)) {
+          return feature.properties;
         }
       }
     }
