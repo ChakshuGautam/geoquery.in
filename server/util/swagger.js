@@ -2,6 +2,7 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import {generateHTML, serve, setup} from 'swagger-ui-express';
 import yaml from 'js-yaml';
 import fs from 'fs';
+import logger from './logger';
 
 const version = process.env.npm_package_version;
 
@@ -23,7 +24,7 @@ console.log(new Response(setup(specs)).formData)
 function swagger(app) {
     // Swagger Page
     app.use('/docs', serve, setup(specs));
-    
+    logger.info('Swagger documentation set up at /docs');
     // app.get('/docs.json', (ctx) => {
     //     ctx.headers.set('content-type','application/json');
     //     return Response.json(specs);
