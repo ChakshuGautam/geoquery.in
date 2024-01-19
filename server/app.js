@@ -5,7 +5,6 @@ import * as turf from '@turf/turf'
 import {Router} from '@stricjs/router';
 import * as fs from 'fs';
 import Bun from 'bun';
-import * as turf from '@turf/turf'
 import express from 'express';
 import swagger from './util/swagger';
 
@@ -114,8 +113,7 @@ export const app = new Router()
   })
   .post('/city/batch', async (req) => {
     try {
-      const { ips } = await req.json();  // Extract the 'ips' array from the request body
-  
+      const ips = await req.json();  // Extract the 'ips' array from the request body
       // Create an array of promises, each promise resolves to the city corresponding to the IP address
       const promises = ips.map(async (ip) => {
         let response;
