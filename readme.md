@@ -23,12 +23,14 @@ bun app.js
 ```
 
 #### API
+Works with both ipv4 and ipv6.
 
 ```sh
 curl https://geoip.samagra.io/city/128.101.101.101
 ```
-
-Works with both ipv4 and ipv6.
+```shell
+curl https://geoip.samagra.io/georev?lat=28.7041&lon=77.1025
+```
 
 #### Notes
 
