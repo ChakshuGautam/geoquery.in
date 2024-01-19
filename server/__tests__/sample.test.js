@@ -41,3 +41,23 @@ describe('POST /city/batch', () => {
     expect(response.status).toBe(500); // Handle error gracefully in your app, so it returns 500 status
   });
 });
+
+describe('GET /georev', () => {
+  // Test with valid latitude and longitude
+  it('returns location data for valid coordinates', async () => {
+    const latitude = '26.8756';  // Use a valid latitude
+    const longitude = '80.9115'; // Use a valid longitude
+    const response = await request(app).get(`/georev?lat=${latitude}&lon=${longitude}`);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('status', 'success');
+  });
+
+  // Test with invalid latitude and longitude
+  it('returns an error for invalid coordinates', async () => {
+    const latitude = 'invalid_lat';  // Invalid latitude
+    const longitude = 'invalid_lon'; // Invalid longitude
+    const response = await request(app).get(`/georev?lat=${latitude}&lon=${longitude}`);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('status', 'fail');
+  });
+});

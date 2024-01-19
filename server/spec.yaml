@@ -291,3 +291,24 @@ paths:
           description: Not Found
         '429':
           description: Too Many Requests
+  /georev:
+    get:
+      description: 'Converts geographic coordinates into a human-readable address or place name'
+      parameters: 
+        - in: query
+          name: lat
+          schema: 
+            type: integer
+          description: 'Latitude for reverse geo-coding'
+        - in: query
+          name: lon
+          schema: 
+            type: integer
+          description: 'Longitude for reverse geo-coding'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/GeoLocationResponseObject'
