@@ -13,10 +13,12 @@
   "dependencies": {
     "@maxmind/geoip2-node": "^4.2.0",
     "@stricjs/router": "^5.0.3",
+    "@turf/turf": "^6.5.0",
     "@types/swagger-jsdoc": "^6.0.1",
     "@types/swagger-ui-express": "^4.1.4",
     "bun": "^1.0.7",
     "express": "^4.18.2",
+    "geojson-rbush": "^3.2.0",
     "maxmind": "^4.3.16",
     "maxmind-db-reader": "^0.2.1",
     "mmdb-lib": "^2.0.2",
