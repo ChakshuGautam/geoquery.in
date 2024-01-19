@@ -196,12 +196,20 @@ components:
             geo:
               type: string
     
-    DistCentroidReponseObject:
+    CentroidReponseObject:
       type: object
       properties:
+        state:
+          type: string
         district:
           type: string
-        state:
+        subdistrict:
+          type: string
+        city:
+          type: string
+        block:
+          type: string
+        village:
           type: string
         lon:
           type: number

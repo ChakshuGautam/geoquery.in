@@ -20,11 +20,19 @@ bun app.js
 #### API
 Works with both ipv4 and ipv6.
 
+Get geolocation corresponding to given IP
 ```sh
 curl https://geoip.samagra.io/city/128.101.101.101
 ```
+
+Get geolocation for given `lat` & `lon`
 ```shell
 curl https://geoip.samagra.io/georev?lat=28.7041&lon=77.1025
+```
+
+Get polygon centroid for given `STATE/DISTRICT/SUBDISTRICT` with `zone` query
+```shell
+curl https://geoip.samagra.io/location/:DISTRICT/centroid?zone=lucknow
 ```
 
 #### Notes
