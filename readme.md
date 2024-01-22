@@ -30,9 +30,9 @@ Get geolocation for given `lat` & `lon`
 curl https://geoip.samagra.io/georev?lat=28.7041&lon=77.1025
 ```
 
-Get polygon centroid for given `STATE/DISTRICT/SUBDISTRICT` with `zone` query
+Get polygon centroid for given `STATE/DISTRICT/SUBDISTRICT` with some query
 ```shell
-curl https://geoip.samagra.io/location/:DISTRICT/centroid?zone=lucknow
+curl https://geoip.samagra.io/location/DISTRICT/centroid?query=lucknow
 ```
 
 #### Notes

@@ -188,35 +188,35 @@ export const app = new Router()
           error: `Unsupported GeoLocation Level: ${locationLevel}`
         }, { status: 400});
       }
-      let zone = url.searchParams.get('zone');
-      if (!zone) {
+      let query = url.searchParams.get('query');
+      if (!query) {
         return Response.json({
           status: 'fail',
-          error: `No ${locationLevel} zone query found`
+          error: `No ${locationLevel} query found`
         }, { status: 400 });
       }
-      let zoneFeature;
+      let queryFeature;
       for (const feature of geoJsonFiles[`${config.country}_${locationLevel}`].features) {
-        if (feature.properties.dtname.toLowerCase() === zone.toLowerCase()) {
-          zoneFeature = feature;
+        if (feature.properties.levelLocationName.toLowerCase() === query.toLowerCase()) {
+          queryFeature = feature;
         }
       }
-      if (!zoneFeature) {
+      if (!queryFeature) {
         return Response.json({
           status: 'fail',
-          error: `No ${locationLevel} found with name: ${zone}`
+          error: `No ${locationLevel} found with name: ${query}`
         }, { status: 404 });
       }
       let polygonFeature;
-      if (zoneFeature.geometry.type === 'Polygon') {
-        polygonFeature = turf.polygon(zoneFeature.geometry.coordinates);
+      if (queryFeature.geometry.type === 'Polygon') {
+        polygonFeature = turf.polygon(queryFeature.geometry.coordinates);
       } else {
-        polygonFeature = turf.multiPolygon(zoneFeature.geometry.coordinates);
+        polygonFeature = turf.multiPolygon(queryFeature.geometry.coordinates);
       }
       const centroid = turf.centroid(polygonFeature);
       const longitude = centroid.geometry.coordinates[0];
       const latitude = centroid.geometry.coordinates[1];
-      return Response.json(formatCentroidResponse(zoneFeature.properties, latitude, longitude), { status : 200 }) 
+      return Response.json(formatCentroidResponse(queryFeature.properties, latitude, longitude), { status : 200 }) 
     } catch (error) {
       return Response.json({ 
         status: 'fail',
