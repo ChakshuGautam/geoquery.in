@@ -26,3 +26,10 @@ curl -Lo INDIA_STATE.geojson "https://github.com/datta07/INDIAN-SHAPEFILES/raw/m
 
 # Changing PWD back to project root
 cd - &> /dev/null
+
+# Updating geoJSON files through script to make them usable in server
+cd server/scripts
+bun parse.geojson.js
+
+# Changing PWD back to project root
+cd - &> /dev/null

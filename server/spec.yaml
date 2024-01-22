@@ -315,14 +315,14 @@ paths:
 
   /location/{locationlevel}/centroid:
     get:
-      description: 'Return pylygon centroid coordinates & state for given district in query'
+      description: 'Return polygon centroid coordinates for given query from sub-district, district or state level'
       parameters: 
         - name: locationlevel
           in: path
           schema:
             type: string
           required: true
-        - name: zone
+        - name: query
           in: query
           schema:
             type: string
@@ -335,6 +335,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/CentroidReponseObject'
         '400':
-          description: District not found in query
+          description: No query found
         '404':
-          description: District Not Found in geojson
+          description: Query not Found in geojson
