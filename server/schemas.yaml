@@ -195,3 +195,23 @@ components:
               type: string
             geo:
               type: string
+    
+    CentroidReponseObject:
+      type: object
+      properties:
+        state:
+          type: string
+        district:
+          type: string
+        subdistrict:
+          type: string
+        city:
+          type: string
+        block:
+          type: string
+        village:
+          type: string
+        lon:
+          type: number
+        lat:
+          type: number

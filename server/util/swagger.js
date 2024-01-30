@@ -5,8 +5,8 @@ import fs from 'fs';
 
 const version = process.env.npm_package_version;
 
-const definition = yaml.load(fs.readFileSync('./spec.yaml', 'utf8'));
-const schemas = yaml.load(fs.readFileSync('./schemas.yaml', 'utf8'));
+const definition = yaml.load(fs.readFileSync(`${import.meta.dir}/../spec.yaml`, 'utf8'));
+const schemas = yaml.load(fs.readFileSync(`${import.meta.dir}/../spec.yaml`, 'utf8'));
 
 definition.components.schemas = schemas.components.schemas;
 const options = {
