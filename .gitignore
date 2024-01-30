@@ -1,3 +1,6 @@
 node_modules
 
 .idea
+/server/geojson-data/*
+.DS_store
+server/.DS_Store

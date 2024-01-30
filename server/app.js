@@ -1,19 +1,47 @@
 import {Reader} from '@maxmind/geoip2-node';
-// var geojsonRbush = require('geojson-rbush').default;
-import {default as geojsonRbush} from 'geojson-rbush';
 import * as turf from '@turf/turf'
 import {Router} from '@stricjs/router';
 import * as fs from 'fs';
 import Bun from 'bun';
 import express from 'express';
 import swagger from './util/swagger';
+import config from './config.json';
 
-const buffer = fs.readFileSync('./db.mmdb');
+const buffer = fs.readFileSync(`${import.meta.dir}/db.mmdb`);
 const reader = Reader.openBuffer(buffer);
 
 const swaggerApp = express();
 
 swagger(swaggerApp);
+
+const GeoLocationLevel = {
+  SUBDISTRICT: 'SUBDISTRICT',
+  DISTRICT: 'DISTRICT',
+  STATE: 'STATE'
+}
+
+// Check if required geojson files exists
+const geoJsonFilesPath = `${import.meta.dir}/geojson-data`;
+fs.readdir(geoJsonFilesPath, (err, files) => {
+  if (err) {
+    console.error("Error reading folder: ", err);
+    process.exit();
+  }
+
+  for (const locationLevel of config.requiredGeoLocationLevels) {
+    const geoJsonFileName = `${config.country}_${locationLevel}.geojson`;
+    if (!files.includes(geoJsonFileName)) {
+      console.error(`Required GeoJson file: ${geoJsonFileName} not present`);
+      process.exit();
+    }
+  }
+});
+
+const geoJsonFiles = {};
+for (const locationLevel of config.requiredGeoLocationLevels) {
+  const geoJsonFileName = `${config.country}_${locationLevel}`;
+  geoJsonFiles[geoJsonFileName] = JSON.parse(fs.readFileSync(`${geoJsonFilesPath}/${geoJsonFileName}.geojson`, 'utf8'));
+}
 
 // format the success response data
 const formatSuccessResponse = (data) => {
@@ -55,6 +83,20 @@ const formatErrorResponse = (error, ip) => {
   }
 }
 
+const formatCentroidResponse = (data, latitude, longitude) => {
+  return {
+    status: 'success',
+    state: data.stname ? data.stname : '',
+    district: data.dtname ? data.dtname : '',
+    subDistrict: data.sdtname ? data.sdtname : '',
+    city: '',
+    block: '',
+    village: '',
+    lat: latitude,
+    lon: longitude
+  }
+}
+
 function isPointInMultiPolygon(multiPolygon, point) {
   return multiPolygon.geometry.coordinates.some(polygonCoordinates => {
     const poly = turf.polygon(polygonCoordinates);
@@ -62,75 +104,129 @@ function isPointInMultiPolygon(multiPolygon, point) {
   });
 }
 
-function individualQuery(geoJSONPaths, coordinates) {
-  for (let path of geoJSONPaths) {
-    const geoJSON = JSON.parse(fs.readFileSync(path, 'utf8'));
-    const turf_point = turf.point(coordinates);
-
-    for (let feature of geoJSON.features) {
-      if (feature.geometry.type === 'Polygon') {
-        let poly = turf.polygon(feature.geometry.coordinates, feature.properties);
-        if (turf.booleanContains(poly, turf_point)) {
-          return poly.properties;
-        }
-      } else if (feature.geometry.type === 'MultiPolygon') {
-        if (isPointInMultiPolygon(feature, turf_point)) {
-          return feature.properties;
-        }
+function individualQuery(country, geoLocationLevel, coordinates) {
+  const pointToSearch = turf.point(coordinates);
+  for (let feature of geoJsonFiles[`${country}_${geoLocationLevel}`].features) {
+    if (feature.geometry.type === 'Polygon') {
+      let poly = turf.polygon(feature.geometry.coordinates, feature.properties);
+      if (turf.booleanContains(poly, pointToSearch)) {
+        return poly.properties;
+      }
+    } else if (feature.geometry.type === 'MultiPolygon') {
+      if (isPointInMultiPolygon(feature, pointToSearch)) {
+        return feature.properties;
       }
     }
   }
 }
 
-const app = new Router()
-    .get('/', () => new Response(Bun.file(__dirname + '/www/index.html')))
-    .get('/city/:ip', (ctx) => {
-      try {
-        const resp = reader.city(ctx.params.ip);
-        return Response.json(formatSuccessResponse(resp));
-      } catch (error) {
-        return Response.json(formatErrorResponse(error, ctx.params.ip));
+export const app = new Router()
+  .get('/', () => new Response(Bun.file(__dirname + '/www/index.html')))
+  .get('/city/:ip', (ctx) => {
+    try {
+      const resp = reader.city(ctx.params.ip);
+      return Response.json(formatSuccessResponse(resp));
+    } catch (error) {
+      return Response.json(formatErrorResponse(error,ctx.params.ip));
+    }
+  })
+  .post('/city/batch', async (req) => {
+    try {
+      const ips = await req.json();  // Extract the 'ips' array from the request body
+      // Create an array of promises, each promise resolves to the city corresponding to the IP address
+      const promises = ips.map(async (ip) => {
+        let response;
+        try {
+           response = reader.city(ip);
+           return formatSuccessResponse(response);
+        } catch (error) {
+          return formatErrorResponse(error,ip);
+        } 
+      });
+      // Wait for all promises to settle and collect the results
+      const results = await Promise.all(promises);
+  
+      return Response.json(results, { status: 200 });
+    } catch (error) {
+      return new Response('Error processing IP addresses', { status: 500 });
+    }
+  })
+  .get('/georev', (ctx) => {
+    try {
+      let url = new URL(ctx.url);
+      let latitude = url.searchParams.get('lat');
+      let longitude = url.searchParams.get('lon');
+      if (!latitude || !longitude) {
+        return Response.json({
+          status: 'fail',
+          error: `lat lon query missing`
+        }, { status: 400 });
       }
-    })
-    .post('/city/batch', async (req) => {
-      try {
-        const {ips} = await req.json();  // Extract the 'ips' array from the request body
-
-        // Create an array of promises, each promise resolves to the city corresponding to the IP address
-        const promises = ips.map(async (ip) => {
-          let response;
-          try {
-            response = reader.city(ip);
-            return formatSuccessResponse(response);
-          } catch (error) {
-            return formatErrorResponse(error, ip);
-          }
-        });
-        // Wait for all promises to settle and collect the results
-        const results = await Promise.all(promises);
-
-        return Response.json(results, {status: 200});
-      } catch (error) {
-        return new Response('Error processing IP addresses', {status: 500});
-      }
-    })
-    .get('/georev', (ctx) => {
-      try {
-        let url = new URL(ctx.url);
-        let latitude = url.searchParams.get('lat');
-        let longitude = url.searchParams.get('lon');
-        let resp = individualQuery(['/path/to/geojson/file'], [longitude, latitude])
-        return Response.json(formatGeorevSuccessResponse(resp));
-      } catch (error) {
+      // Searching for SUBDISTRICT GeoLocation Level
+      let resp = individualQuery(config.country, GeoLocationLevel.SUBDISTRICT, [longitude, latitude])
+      if (!resp) {
         return Response.json({
           status: "fail",
-          error: error.name
-        })
+          error: `No GeoLocation found for lat: ${latitude}, lon ${longitude}`
+        }, { status: 404 });
       }
-    });
+      return Response.json(formatGeorevSuccessResponse(resp));
+    } catch (error) {
+      return Response.json({
+        status: "fail",
+        error: error.message
+      }, { status: 500 })
+    }
+  })
+  .get('/location/:locationlevel/centroid', async (ctx) => {
+    try {
+      let url = new URL(ctx.url);
+      const locationLevel = ctx.params.locationlevel;
+      if (!Object.keys(GeoLocationLevel).includes(locationLevel)) {
+        return Response.json({
+          status: 'fail',
+          error: `Unsupported GeoLocation Level: ${locationLevel}`
+        }, { status: 400});
+      }
+      let query = url.searchParams.get('query');
+      if (!query) {
+        return Response.json({
+          status: 'fail',
+          error: `No ${locationLevel} query found`
+        }, { status: 400 });
+      }
+      let queryFeature;
+      for (const feature of geoJsonFiles[`${config.country}_${locationLevel}`].features) {
+        if (feature.properties.levelLocationName.toLowerCase() === query.toLowerCase()) {
+          queryFeature = feature;
+        }
+      }
+      if (!queryFeature) {
+        return Response.json({
+          status: 'fail',
+          error: `No ${locationLevel} found with name: ${query}`
+        }, { status: 404 });
+      }
+      let polygonFeature;
+      if (queryFeature.geometry.type === 'Polygon') {
+        polygonFeature = turf.polygon(queryFeature.geometry.coordinates);
+      } else {
+        polygonFeature = turf.multiPolygon(queryFeature.geometry.coordinates);
+      }
+      const centroid = turf.centroid(polygonFeature);
+      const longitude = centroid.geometry.coordinates[0];
+      const latitude = centroid.geometry.coordinates[1];
+      return Response.json(formatCentroidResponse(queryFeature.properties, latitude, longitude), { status : 200 }) 
+    } catch (error) {
+      return Response.json({ 
+        status: 'fail',
+        error: error.name 
+      }, { status: 500 });
+    }
+  });
 
 app.use(404, () => {
-  return new Response(Bun.file(__dirname + '/www/404.html'))
+  return new Response(Bun.file(import.meta.dir + '/www/404.html'))
 });
 
 app.port = (process.env.PORT || 3000);
@@ -139,5 +235,3 @@ app.hostname = '0.0.0.0';
 
 swaggerApp.listen(3001, () => console.log('Swagger listening on port 3000'))
 app.listen();
-
-export default app;

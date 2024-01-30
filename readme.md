@@ -6,14 +6,9 @@ See code example in the [server](./server/app.js) folder.
 
 #### Setup Server
 
-Make sure you have [`bun`](https://bun.sh/) installed.
+Run `./setup.sh`. This script will install bun and download required files to setup server
 ```sh
-curl -fsSL https://bun.sh/install | bash
-```
-
-Install/Build
-```sh
-bun install
+./setup.sh
 ```
 
 Start Server
@@ -25,11 +20,19 @@ bun app.js
 #### API
 Works with both ipv4 and ipv6.
 
+Get geolocation corresponding to given IP
 ```sh
 curl https://geoip.samagra.io/city/128.101.101.101
 ```
+
+Get geolocation for given `lat` & `lon`
 ```shell
 curl https://geoip.samagra.io/georev?lat=28.7041&lon=77.1025
+```
+
+Get polygon centroid for given `STATE/DISTRICT/SUBDISTRICT` with some query
+```shell
+curl https://geoip.samagra.io/location/DISTRICT/centroid?query=lucknow
 ```
 
 #### Notes
