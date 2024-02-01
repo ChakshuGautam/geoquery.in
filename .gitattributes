@@ -1,0 +1,4 @@
+server/geojson-data/indian_village_boundaries.zip/puducherry/KARAIKAL.zip filter=lfs diff=lfs merge=lfs -text
+server/geojson-data/indian_village_boundaries.zip/puducherry/MAHE.zip filter=lfs diff=lfs merge=lfs -text
+server/geojson-data/indian_village_boundaries.zip/puducherry/PUDUCHERRY.zip filter=lfs diff=lfs merge=lfs -text
+server/geojson-data/indian_village_boundaries.zip/puducherry/YANAM.zip filter=lfs diff=lfs merge=lfs -text
