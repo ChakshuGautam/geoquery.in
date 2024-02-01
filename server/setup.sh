@@ -17,8 +17,8 @@ fi
 bun install
 
 # Changing PWD to download geojson data using curl
-mkdir server/geojson-data &> /dev/null
-cd server/geojson-data
+mkdir ./geojson-data &> /dev/null
+cd geojson-data
 
 curl -Lo INDIA_DISTRICT.geojson "https://github.com/datta07/INDIAN-SHAPEFILES/raw/master/INDIA/INDIA_DISTRICTS.geojson"
 curl -Lo INDIA_SUBDISTRICT.geojson "https://github.com/datta07/INDIAN-SHAPEFILES/raw/master/INDIA/INDIAN_SUB_DISTRICTS.geojson"
@@ -43,12 +43,12 @@ mv ./or ./odisha
 mv ./rj ./rajasthan
 mv ./sk ./sikkim
 
-# Changing PWD back to project root
-cd ../../..
+# Changing PWD back to /server/
+cd ../..
 
 # Updating geoJSON files through script to make them usable in server
-cd server/scripts
+cd scripts
 bun parse.geojson.js
 
-# Changing PWD back to project root
+# Changing PWD back to /server/
 cd - &> /dev/null
