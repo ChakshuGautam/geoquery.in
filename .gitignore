@@ -3,5 +3,5 @@ node_modules
 .idea
 .DS_store
 server/.DS_Store
-/server/geojson-data/indian_village_boundaries
+/server/geojson-data/indian_villages_boundaries
 /server/geojson-data/*json
