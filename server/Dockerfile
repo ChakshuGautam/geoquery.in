@@ -4,8 +4,11 @@ WORKDIR /usr/src/app
 
 COPY . .
 
+RUN apt-get update && apt-get install -y \
+curl
+CMD /bin/bash
 COPY ./package*.json ./bun.lockb ./
-RUN bun install
+RUN ./setup.sh
 
 ENV NODE_ENV production
 
