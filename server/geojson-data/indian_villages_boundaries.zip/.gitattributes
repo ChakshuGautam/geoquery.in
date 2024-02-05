@@ -1,0 +1,13 @@
+BAGESHWAR.zip filter=lfs diff=lfs merge=lfs -text
+CHAMOLI.zip filter=lfs diff=lfs merge=lfs -text
+CHAMPAWAT.zip filter=lfs diff=lfs merge=lfs -text
+DEHRADUN.zip filter=lfs diff=lfs merge=lfs -text
+HARIDWAR.zip filter=lfs diff=lfs merge=lfs -text
+NAINITAL.zip filter=lfs diff=lfs merge=lfs -text
+PAURI_GARHWAL.zip filter=lfs diff=lfs merge=lfs -text
+PITHORAGARH.zip filter=lfs diff=lfs merge=lfs -text
+ALMORA.zip filter=lfs diff=lfs merge=lfs -text
+RUDRAPRAYAG.zip filter=lfs diff=lfs merge=lfs -text
+TEHRI_GARHWAL.zip filter=lfs diff=lfs merge=lfs -text
+UDHAM_SINGH_NAGAR.zip filter=lfs diff=lfs merge=lfs -text
+UTTARKASHI.zip filter=lfs diff=lfs merge=lfs -text
