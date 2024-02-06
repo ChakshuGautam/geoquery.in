@@ -22,6 +22,7 @@
     "maxmind": "^4.3.16",
     "maxmind-db-reader": "^0.2.1",
     "mmdb-lib": "^2.0.2",
+    "ol": "^8.2.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0"
   },
