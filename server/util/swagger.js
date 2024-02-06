@@ -17,12 +17,12 @@ const options = {
 };
 
 const specs = swaggerJsdoc(options);
-Logger.debug(specs);
+Logger.debug('logger.js',specs);
 console.log(Response.json(serve))
 console.log(new Response(setup(specs)).formData)
 
 function swagger(app) {
-    Logger.debug('Setting up Swagger');
+    Logger.debug('logger.js','Setting up Swagger');
     // Swagger Page
     app.use('/docs', serve, setup(specs));
     

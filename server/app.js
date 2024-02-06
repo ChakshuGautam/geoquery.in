@@ -26,14 +26,14 @@ const GeoLocationLevel = {
 const geoJsonFilesPath = `${import.meta.dir}/geojson-data`;
 fs.readdir(geoJsonFilesPath, (err, files) => {
   if (err) {
-    Logger.error(`Error reading folder: ${err}`);
+    Logger.error('app.js',`Error reading folder: ${err}`);
     process.exit();
   }
 
   for (const locationLevel of config.requiredGeoLocationLevels) {
     const geoJsonFileName = `${config.country}_${locationLevel}.geojson`;
     if (!files.includes(geoJsonFileName)) {
-      Logger.error(`Required GeoJson file: ${geoJsonFileName} not present`);
+      Logger.error('app.js',`Required GeoJson file: ${geoJsonFileName} not present`);
       process.exit();
     }
   }
@@ -43,7 +43,7 @@ const geoJsonFiles = {};
 for (const locationLevel of config.requiredGeoLocationLevels) {
   const geoJsonFileName = `${config.country}_${locationLevel}`;
   geoJsonFiles[geoJsonFileName] = JSON.parse(fs.readFileSync(`${geoJsonFilesPath}/${geoJsonFileName}.geojson`, 'utf8'));
-  Logger.info(`Loaded GeoJson file: ${geoJsonFileName}`);
+  Logger.info('app.js',`Loaded GeoJson file: ${geoJsonFileName}`);
 }
 
 // format the success response data
@@ -69,7 +69,7 @@ const formatSuccessResponse = (data) => {
 
 // format the georev success response
 const formatGeorevSuccessResponse = (data) => {
-  Logger.info(`GeoRev Success Response: ${JSON.stringify(data)}`);
+  Logger.info('app.js',`GeoRev Success Response: ${JSON.stringify(data)}`);
   return {
     status: 'success',
     state: data.stname ? data.stname : '',
@@ -80,7 +80,7 @@ const formatGeorevSuccessResponse = (data) => {
 
 // format the error response data
 const formatErrorResponse = (error, ip) => {
-  Logger.error(`Error processing IP: ${ip}, Error: ${error.name}`);
+  Logger.error('app.js',`Error processing IP: ${ip}, Error: ${error.name}`);
   return {
     status: "fail",
     message: error.name,
@@ -89,7 +89,7 @@ const formatErrorResponse = (error, ip) => {
 }
 
 const formatCentroidResponse = (data, latitude, longitude) => {
-  Logger.info(`Centroid Success Response: ${JSON.stringify(data)}`);
+  Logger.info('app.js',`Centroid Success Response: ${JSON.stringify(data)}`);
   return {
     status: 'success',
     state: data.stname ? data.stname : '',
@@ -104,7 +104,7 @@ const formatCentroidResponse = (data, latitude, longitude) => {
 }
 
 function isPointInMultiPolygon(multiPolygon, point) {
-  Logger.info(`Checking if point is in MultiPolygon`);
+  Logger.info('app.js',`Checking if point is in MultiPolygon`);
   return multiPolygon.geometry.coordinates.some(polygonCoordinates => {
     const poly = turf.polygon(polygonCoordinates);
     return turf.booleanContains(poly, point);
@@ -115,16 +115,16 @@ function individualQuery(country, geoLocationLevel, coordinates) {
   const pointToSearch = turf.point(coordinates);
   for (let feature of geoJsonFiles[`${country}_${geoLocationLevel}`].features) {
     if (feature.geometry.type === 'Polygon') {
-      Logger.info(`Checking if point is in Polygon`);
+      Logger.info('app.js',`Checking if point is in Polygon`);
       let poly = turf.polygon(feature.geometry.coordinates, feature.properties);
       if (turf.booleanContains(poly, pointToSearch)) {
-        Logger.info(`Point is in Polygon`);
+        Logger.info('app.js',`Point is in Polygon`);
         return poly.properties;
       }
     } else if (feature.geometry.type === 'MultiPolygon') {
-      Logger.info(`Checking if point is in MultiPolygon`);
+      Logger.info('app.js',`Checking if point is in MultiPolygon`);
       if (isPointInMultiPolygon(feature, pointToSearch)) {
-        Logger.info(`Point is in MultiPolygon`);
+        Logger.info('app.js',`Point is in MultiPolygon`);
         return feature.properties;
       }
     }
@@ -136,35 +136,35 @@ export const app = new Router()
   .get('/city/:ip', (ctx) => {
     try {
       const resp = reader.city(ctx.params.ip);
-      Logger.info(`City Success Response: ${JSON.stringify(resp)}`);
+      Logger.info('app.js',`City Success Response: ${JSON.stringify(resp)}`);
       return Response.json(formatSuccessResponse(resp));
     } catch (error) {
-      Logger.error(`Error processing IP: ${ctx.params.ip}, Error: ${error.name}`);
+      Logger.error('app.js',`Error processing IP: ${ctx.params.ip}, Error: ${error.name}`);
       return Response.json(formatErrorResponse(error,ctx.params.ip));
     }
   })
   .post('/city/batch', async (req) => {
     try {
-      Logger.info(`Batch City Request: ${JSON.stringify(req)}`);
+      Logger.info('app.js',`Batch City Request: ${JSON.stringify(req)}`);
       const ips = await req.json();  // Extract the 'ips' array from the request body
       // Create an array of promises, each promise resolves to the city corresponding to the IP address
       const promises = ips.map(async (ip) => {
         let response;
         try {
            response = reader.city(ip);
-           Logger.info(`City Success Response: ${JSON.stringify(response)}`);
+           Logger.info('app.js',`City Success Response: ${JSON.stringify(response)}`);
            return formatSuccessResponse(response);
         } catch (error) {
-          Logger.error(`Error processing IP: ${ip}, Error: ${error.name}`);
+          Logger.error('app.js',`Error processing IP: ${ip}, Error: ${error.name}`);
           return formatErrorResponse(error,ip);
         } 
       });
       // Wait for all promises to settle and collect the results
       const results = await Promise.all(promises);
-      Logger.info(`Batch City Success Response: ${JSON.stringify(results)}`);
+      Logger.info('app.js',`Batch City Success Response: ${JSON.stringify(results)}`);
       return Response.json(results, { status: 200 });
     } catch (error) {
-      Logger.error(`Error processing IP addresses: ${error.name}`);
+      Logger.error('app.js',`Error processing IP addresses: ${error.name}`);
       return new Response('Error processing IP addresses', { status: 500 });
     }
   })
@@ -174,7 +174,7 @@ export const app = new Router()
       let latitude = url.searchParams.get('lat');
       let longitude = url.searchParams.get('lon');
       if (!latitude || !longitude) {
-        Logger.error(`lat lon query missing`);
+        Logger.error('app.js',`lat lon query missing`);
         return Response.json({
           status: 'fail',
           error: `lat lon query missing`
@@ -183,16 +183,16 @@ export const app = new Router()
       // Searching for SUBDISTRICT GeoLocation Level
       let resp = individualQuery(config.country, GeoLocationLevel.SUBDISTRICT, [longitude, latitude])
       if (!resp) {
-        Logger.error(`No GeoLocation found for lat: ${latitude}, lon ${longitude}`);
+        Logger.error('app.js',`No GeoLocation found for lat: ${latitude}, lon ${longitude}`);
         return Response.json({
           status: "fail",
           error: `No GeoLocation found for lat: ${latitude}, lon ${longitude}`
         }, { status: 404 });
       }
-      Logger.info(`GeoRev Success Response: ${JSON.stringify(resp)}`);
+      Logger.info('app.js',`GeoRev Success Response: ${JSON.stringify(resp)}`);
       return Response.json(formatGeorevSuccessResponse(resp));
     } catch (error) {
-      Logger.error(`Error processing lat lon: ${error.name}`);
+      Logger.error('app.js',`Error processing lat lon: ${error.name}`);
       return Response.json({
         status: "fail",
         error: error.message
@@ -204,7 +204,7 @@ export const app = new Router()
       let url = new URL(ctx.url);
       const locationLevel = ctx.params.locationlevel;
       if (!Object.keys(GeoLocationLevel).includes(locationLevel)) {
-        Logger.error(`Unsupported GeoLocation Level: ${locationLevel}`);
+        Logger.error('app.js',`Unsupported GeoLocation Level: ${locationLevel}`);
         return Response.json({
           status: 'fail',
           error: `Unsupported GeoLocation Level: ${locationLevel}`
@@ -212,7 +212,7 @@ export const app = new Router()
       }
       let query = url.searchParams.get('query');
       if (!query) {
-        Logger.error(`No ${locationLevel} query found`);
+        Logger.error('app.js',`No ${locationLevel} query found`);
         return Response.json({
           status: 'fail',
           error: `No ${locationLevel} query found`
@@ -225,7 +225,7 @@ export const app = new Router()
         }
       }
       if (!queryFeature) {
-        Logger.error(`No ${locationLevel} found with name: ${query}`);
+        Logger.error('app.js',`No ${locationLevel} found with name: ${query}`);
         return Response.json({
           status: 'fail',
           error: `No ${locationLevel} found with name: ${query}`
@@ -240,10 +240,10 @@ export const app = new Router()
       const centroid = turf.centroid(polygonFeature);
       const longitude = centroid.geometry.coordinates[0];
       const latitude = centroid.geometry.coordinates[1];
-      Logger.info(`Centroid Success Response: ${JSON.stringify(queryFeature.properties)}`);
+      Logger.info('app.js',`Centroid Success Response: ${JSON.stringify(queryFeature.properties)}`);
       return Response.json(formatCentroidResponse(queryFeature.properties, latitude, longitude), { status : 200 }) 
     } catch (error) {
-      Logger.error(`Error processing ${locationLevel} query: ${error.name}`);
+      Logger.error('app.js',`Error processing ${locationLevel} query: ${error.name}`);
       return Response.json({ 
         status: 'fail',
         error: error.name 
@@ -252,7 +252,7 @@ export const app = new Router()
   });
 
 app.use(404, () => {
-  Logger.error(`404 Not Found`);
+  Logger.error('app.js',`404 Not Found`);
   return new Response(Bun.file(import.meta.dir + '/www/404.html'))
 });
 
@@ -260,5 +260,5 @@ app.port = (process.env.PORT || 3000);
 app.hostname = '0.0.0.0';
 
 
-swaggerApp.listen(3001, () => logger.info('Swagger listening on port 3000'));
+swaggerApp.listen(3001, () => logger.info('app.js','Swagger listening on port 3000'));
 app.listen();

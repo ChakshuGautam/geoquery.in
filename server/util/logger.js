@@ -23,20 +23,20 @@ class Logger {
         });
     }
 
-    debug(message) {
-        this.logger.debug(message);
+    debug(className, message) {
+        this.logger.debug(`[${className}] ${message}`);
     }
 
-    info(message) {
-        this.logger.info(message);
+    info(className, message) {
+        this.logger.info(`[${className}] ${message}`);
     }
 
-    warn(message) {
-        this.logger.warn(message);
+    warn(className, message) {
+        this.logger.warn(`[${className}] ${message}`);
     }
 
-    error(message) {
-        this.logger.error(message);
+    error(className, message) {
+        this.logger.error(`[${className}] ${message}`);
     }
 }
 
