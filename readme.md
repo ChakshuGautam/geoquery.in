@@ -8,12 +8,12 @@ See code example in the [server](./server/app.js) folder.
 
 Run `./setup.sh`. This script will install bun and download required files to setup server
 ```sh
+cd server
 ./setup.sh
 ```
 
 Start Server
 ```sh
-cd server
 bun app.js
 ```
 

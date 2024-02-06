@@ -15,6 +15,7 @@ const swaggerApp = express();
 swagger(swaggerApp);
 
 const GeoLocationLevel = {
+  VILLAGE: 'VILLAGE',
   SUBDISTRICT: 'SUBDISTRICT',
   DISTRICT: 'DISTRICT',
   STATE: 'STATE'
