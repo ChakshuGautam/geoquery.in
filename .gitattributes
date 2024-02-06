@@ -1,1 +1,4 @@
-/geojson-data/indian_village_boundaries.zip/andaman_and_nicobar filter=lfs diff=lfs merge=lfs -text
+/server/geojson-data/indian_villages_boundaries.zip/himachal_pradesh/** filter=lfs diff=lfs merge=lfs -text
+/server/geojson-data/indian_villages_boundaries.zip/lakshwadeep/** filter=lfs diff=lfs merge=lfs -text
+/server/geojson-data/indian_villages_boundaries.zip/uttar_pradesh/** filter=lfs diff=lfs merge=lfs -text
+/server/geojson-data/indian_villages_boundaries.zip/andaman_and_nicobar/** filter=lfs diff=lfs merge=lfs -text
