@@ -25,7 +25,7 @@ jobs:
         
       
       - name: Install dependencies
-        run: bun install
+        run: ./setup.sh
         working-directory: ./geoip/server # Set the working directory to your project root
 
       - name: Run bun test
