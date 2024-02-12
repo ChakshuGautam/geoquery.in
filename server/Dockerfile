@@ -4,8 +4,7 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN apt-get update && apt-get install -y \
-curl
+RUN apt-get update && apt-get install -y curl && apt-get install -y git
 CMD /bin/bash
 COPY ./package*.json ./bun.lockb ./
 RUN ./setup.sh
