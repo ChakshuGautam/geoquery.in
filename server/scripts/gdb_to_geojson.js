@@ -1,13 +1,18 @@
 import fgdb from 'fgdb';
 import * as fs from 'fs/promises';
 import * as path from "path";
-import JSZip from "jszip";
 
-const inputDir = `${import.meta.dir}/../geojson-data/indian_village_boundaries.zip`;
-const outputDir = `${import.meta.dir}/../geojson-data/indian_village_boundaries`;
+const inputDir = `${import.meta.dir}/../geojson-data/indian_villages_boundaries.zip`;
+const outputDir = `${import.meta.dir}/../geojson-data/indian_villages_boundaries`;
 
 function isZipFile(filename) {
   return filename.endsWith('.zip');
+}
+
+async function createIfAbsent(filePath) {
+  if (!await fs.exists(filePath)) {
+    await fs.mkdir(filePath, {recursive: true});
+  }
 }
 
 const convertGDBtoGeoJSON = async (gdbFileBuffer, outputFilePath) => {
@@ -22,30 +27,23 @@ const convertGDBtoGeoJSON = async (gdbFileBuffer, outputFilePath) => {
   }
 };
 
+const processFiles = async () => {
+  await createIfAbsent(outputDir);
+  const items = await fs.readdir(inputDir, {withFileTypes: true, recursive: true});
 
-const processZipFiles = async () => {
-  let new_zip = new JSZip();
-  let parent_file_data = await fs.readFile(inputDir);
-  let parent_folder = await new_zip.loadAsync(parent_file_data);
+  for (const item of items) {
+    const itemPath = path.join(inputDir, item.name);
 
-  await fs.rm(outputDir, {recursive: true, force: true});
-  await fs.mkdir(outputDir);
-
-
-  for (const fileName of Object.keys(parent_folder.files)) {
-    const file = parent_folder.files[fileName];
-
-    if (!isZipFile(fileName)) {
-      await fs.rm(path.join(outputDir, fileName), {recursive: true, force: true});
-      await fs.mkdir(path.join(outputDir, fileName), {recursive: true});
-    } else if (isZipFile(fileName)) {
-      const fileBuffer = await parent_folder.file(fileName).async('nodebuffer');
-      await convertGDBtoGeoJSON(fileBuffer, path.join(outputDir, fileName.replace(/\.zip$/i, '.geoJSON')));
+    if (!isZipFile(item.name)) {
+      await createIfAbsent(path.join(outputDir, item.name));
+    } else if (isZipFile(item.name)) {
+      const fileBuffer = await fs.readFile(itemPath);
+      await convertGDBtoGeoJSON(fileBuffer, path.join(outputDir, item.name.replace(/\.zip$/i, '.geoJSON')));
     }
   }
-}
+};
 
 
-processZipFiles().then(r => {
+processFiles().then(r => {
   console.log("Converted all gdbs to geJSON");
 });
