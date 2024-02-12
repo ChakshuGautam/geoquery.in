@@ -8,12 +8,12 @@ See code example in the [server](./server/app.js) folder.
 
 Run `./setup.sh`. This script will install bun and download required files to setup server
 ```sh
+cd server
 ./setup.sh
 ```
 
 Start Server
 ```sh
-cd server
 bun app.js
 ```
 
@@ -35,6 +35,29 @@ Get polygon centroid for given `STATE/DISTRICT/SUBDISTRICT` with some query
 curl https://geoip.samagra.io/location/DISTRICT/centroid?query=lucknow
 ```
 
+Fuzzy search location by name with `STATE/DISTRICT/SUBDISTRICT/VILLAGE` levels with query & location level filters in request body, `filter` keys should one of these `STATE/DISTRICT/SUBDISTRICT/VILLAGE`.
+```shell
+curl --location 'https://geoip.samagra.io/location/VILLAGE/fuzzysearch' \
+--header 'Content-Type: application/json' \
+--data '{
+    "query": "Arong",
+    "filter": {
+        "STATE": "Andaman & Nicobar Islands",
+        "DISTRICT": "Nicobars"
+    }
+}'
+# Response
+{
+    "matches": [
+        {
+            "state": "Andaman & Nicobar Islands",
+            "district": "Nicobars",
+            "subDistrict": "Car Nicobar",
+            "village": "Arong"
+        }
+    ]
+}
+```
 #### Notes
 
 DB will remain updated automatically. Please create a ticket if you see some issues.
