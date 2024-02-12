@@ -2,7 +2,7 @@ name: Download and Commit File
 
 on:
   schedule:
-    - cron:  '0 0 * * *'  # This will run the action daily at midnight
+    - cron:  '0 12 * * 0'  # This will run the action daily at midnight
   workflow_dispatch:  # This allows manual triggering
 
 jobs:
