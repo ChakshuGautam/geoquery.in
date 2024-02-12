@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   tests:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [14, 16, 18]
 
     steps:
       - name: Checkout code
@@ -18,21 +18,16 @@ jobs:
         with:
           path: ./geoip # Set the path to your project root directory
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: ${{ matrix.node }}
+          bun-version: 1.0.23
+        
       
       - name: Install dependencies
-        run: npm install
+        run: ./setup.sh
         working-directory: ./geoip/server # Set the working directory to your project root
 
-      - name: Run jest test
-        run: npx jest --coverage
+      - name: Run bun test
+        run: bun test
         working-directory: ./geoip/server # Set the working directory to your project root
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v2
-        with:
-          name: test-results
-          path: ./geoip/coverage

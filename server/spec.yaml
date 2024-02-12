@@ -291,3 +291,50 @@ paths:
           description: Not Found
         '429':
           description: Too Many Requests
+  /georev:
+    get:
+      description: 'Converts geographic coordinates into a human-readable address or place name'
+      parameters: 
+        - in: query
+          name: lat
+          schema: 
+            type: integer
+          description: 'Latitude for reverse geo-coding'
+        - in: query
+          name: lon
+          schema: 
+            type: integer
+          description: 'Longitude for reverse geo-coding'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/GeoLocationResponseObject'
+
+  /location/{locationlevel}/centroid:
+    get:
+      description: 'Return polygon centroid coordinates for given query from sub-district, district or state level'
+      parameters: 
+        - name: locationlevel
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: query
+          in: query
+          schema:
+            type: string
+          reqired: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CentroidReponseObject'
+        '400':
+          description: No query found
+        '404':
+          description: Query not Found in geojson
