@@ -1,5 +1,8 @@
-<h1 align="center">GeoIP-Service</h1>
-<h4 align="center">Examples on how to do IP to Location Details </h4>
+<h1 align="center">GeoQuery.in</h1>
+<h4 align="center">Open Mapping Infrastructure</h4>
+
+#### Vision
+Our [vision](./vision.md).
 
 #### Example
 See code example in the [server](./server/app.js) folder.
