@@ -3,7 +3,7 @@ import * as fs from 'fs/promises';
 import * as path from "path";
 
 const inputDir = `${import.meta.dir}/../geojson-data/indian_villages_boundaries.zip`;
-const outputDir = `${import.meta.dir}/../geojson-data/indian_villages_boundaries`;
+const outputDir = `${import.meta.dir}/../geojson-data/indian_village_boundaries`;
 
 function isZipFile(filename) {
   return filename.endsWith('.zip');
