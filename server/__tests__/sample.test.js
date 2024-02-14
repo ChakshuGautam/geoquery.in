@@ -158,7 +158,7 @@ describe('GET /georev', () => {
 
 describe('GET /location/:locationlevel/centroid', () => {
   it ('should return lat lon for given district name in query', async() => {
-    const response = await fetch(`${BASE_URL}/location/DISTRICT/centroid?zone=lucknow`);
+    const response = await fetch(`${BASE_URL}/location/DISTRICT/centroid?query=lucknow`);
     const jsonResponse = await response.json();
     expect(response.status).toBe(200);
     expect(jsonResponse).toEqual({
@@ -175,7 +175,7 @@ describe('GET /location/:locationlevel/centroid', () => {
   })
 
   it ('should return error for invalid district name in query', async() => {
-    const response = await fetch(`${BASE_URL}/location/DISTRICT/centroid?zone=lalaland`);
+    const response = await fetch(`${BASE_URL}/location/DISTRICT/centroid?query=lalaland`);
     expect(response.status).toBe(404);
   })
 });

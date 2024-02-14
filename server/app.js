@@ -7,10 +7,13 @@ import express from 'express';
 import swagger from './util/swagger';
 import config from './config.json';
 import Logger from './util/logger';
+import { Level, LocationSearch } from './location.search';
 
 const buffer = fs.readFileSync(`${import.meta.dir}/db.mmdb`);
 const reader = Reader.openBuffer(buffer);
 const logger = new Logger('app.js');
+
+const locationSearch = new LocationSearch(`${import.meta.dir}/geojson-data/PARSED_MASTER_LOCATION_NAMES.json`);
 const swaggerApp = express();
 
 swagger(swaggerApp);
@@ -244,6 +247,68 @@ export const app = new Router()
       return Response.json(formatCentroidResponse(queryFeature.properties, latitude, longitude), { status : 200 }) 
     } catch (error) {
       Logger.error(`Error processing ${locationLevel} query: ${error.name}`);
+      return Response.json({ 
+        status: 'fail',
+        error: error.name 
+      }, { status: 500 });
+    }
+  })
+  .post('/location/:locationlevel/fuzzysearch', async (req) => {
+    try {
+      let reqBody = await req.json();
+      const locationLevel = req.params.locationlevel;
+      if (!Object.keys(GeoLocationLevel).includes(locationLevel)) {
+        return Response.json({
+          status: 'fail',
+          error: `Unsupported GeoLocation Level: ${locationLevel}`
+        }, { status: 400});
+      }
+      let query = reqBody.query;
+      if (!query) {
+        return Response.json({
+          status: 'fail',
+          error: `No ${locationLevel} query found`
+        }, { status: 400 });
+      }
+      let filter = reqBody.filter;
+      let filterArray = [];
+      if (filter) {
+        for (const filterKey of Object.keys(filter)) {
+          if (!Object.keys(GeoLocationLevel).includes(filterKey)) {
+            return Response.json({
+              status: 'fail',
+              error: `Unsupported GeoLocation Level Filter: ${filterKey}`,
+            }, { status: 400 })
+          }
+          filterArray.push({
+            level: Level[`${filterKey}`],
+            query: filter[filterKey],
+          });
+        }
+      }
+      let searchLevel;
+      switch (locationLevel) {
+        case 'STATE':
+          searchLevel = Level.STATE;
+          break;
+        case 'DISTRICT':
+          searchLevel = Level.DISTRICT;
+          break;
+        case 'SUBDISTRICT':
+          searchLevel = Level.SUBDISTRICT;
+          break;
+        case 'VILLAGE':
+          searchLevel = Level.VILLAGE;
+          break;
+        default:
+          // Unreachable
+          break;
+      }
+      const queryResponse = locationSearch.fuzzySearch(searchLevel, query, filterArray);
+      return Response.json({
+        matches: queryResponse
+      }, { status: 200 });
+    } catch (error) {
       return Response.json({ 
         status: 'fail',
         error: error.name 
