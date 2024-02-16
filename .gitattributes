@@ -9,4 +9,5 @@
 /server/geojson-data/indian_villages_boundaries.zip/jharkhand/** filter=lfs diff=lfs merge=lfs -text
 /server/geojson-data/indian_villages_boundaries.zip/haryana/** filter=lfs diff=lfs merge=lfs -text
 /server/geojson-data/indian_villages_boundaries.zip/madhya_pradesh/** filter=lfs diff=lfs merge=lfs -text
+/server/geojson-data/indian_villages_boundaries.zip/chhattisgarh/** filter=lfs diff=lfs merge=lfs -text
 /server/geojson-data/indian_villages_boundaries.zip/assam/** filter=lfs diff=lfs merge=lfs -text
