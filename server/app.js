@@ -11,7 +11,7 @@ import { Level, LocationSearch } from './location.search';
 
 const buffer = fs.readFileSync(`${import.meta.dir}/db.mmdb`);
 const reader = Reader.openBuffer(buffer);
-const logger = new Logger('app.js');
+const Logger = new Logger('app.js');
 
 const locationSearch = new LocationSearch(`${import.meta.dir}/geojson-data/PARSED_MASTER_LOCATION_NAMES.json`);
 const swaggerApp = express();
@@ -387,5 +387,5 @@ app.port = (process.env.PORT || 3000);
 app.hostname = '0.0.0.0';
 
 
-swaggerApp.listen(3001, () => logger.info('Swagger listening on port 3000'));
+swaggerApp.listen(3001, () => Logger.info('Swagger listening on port 3000'));
 app.listen();
