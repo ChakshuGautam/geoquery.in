@@ -1,10 +1,13 @@
-<h1 align="center">GeoIP-Service</h1>
-<h4 align="center">Examples on how to do IP to Location Details </h4>
+<h1 align="center">GeoQuery.in</h1>
+<h4 align="center">Open Mapping Infrastructure</h4>
 
-#### Example
+### Vision
+Our [vision](./vision.md).
+
+### Example
 See code example in the [server](./server/app.js) folder.
 
-#### Setup Server
+### Setup Server
 
 Run `./setup.sh`. This script will install bun and download required files to setup server
 ```sh
@@ -17,7 +20,7 @@ Start Server
 bun app.js
 ```
 
-#### API
+### API
 Works with both ipv4 and ipv6.
 
 Get geolocation corresponding to given IP
@@ -35,11 +38,34 @@ Get polygon centroid for given `STATE/DISTRICT/SUBDISTRICT` with some query
 curl https://geoip.samagra.io/location/DISTRICT/centroid?query=lucknow
 ```
 
-#### Notes
+Fuzzy search location by name with `STATE/DISTRICT/SUBDISTRICT/VILLAGE` levels with query & location level filters in request body, `filter` keys should one of these `STATE/DISTRICT/SUBDISTRICT/VILLAGE`.
+```shell
+curl --location 'https://geoip.samagra.io/location/VILLAGE/fuzzysearch' \
+--header 'Content-Type: application/json' \
+--data '{
+    "query": "Arong",
+    "filter": {
+        "STATE": "Andaman & Nicobar Islands",
+        "DISTRICT": "Nicobars"
+    }
+}'
+# Response
+{
+    "matches": [
+        {
+            "state": "Andaman & Nicobar Islands",
+            "district": "Nicobars",
+            "subDistrict": "Car Nicobar",
+            "village": "Arong"
+        }
+    ]
+}
+```
+### Notes
 
 DB will remain updated automatically. Please create a ticket if you see some issues.
 
 
-#### Contribution Guide
+### Contribution Guide
 1. Please consider issues up from grabs.
 2. It will only be assigned with a PR.
