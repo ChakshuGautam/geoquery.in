@@ -18,8 +18,8 @@ const options = {
 
 const specs = swaggerJsdoc(options);
 Logger.debug(specs);
-console.log(Response.json(serve))
-console.log(new Response(setup(specs)).formData)
+logger.debug(Response.json(serve))
+logger.debug(new Response(setup(specs)).formData)
 
 function swagger(app) {
     Logger.debug('Setting up Swagger');
