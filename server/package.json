@@ -19,13 +19,14 @@
     "bun": "^1.0.7",
     "express": "^4.18.2",
     "fgdb": "^1.0.0",
+    "fuse.js": "^7.0.0",
     "geojson-rbush": "^3.2.0",
     "maxmind": "^4.3.16",
     "maxmind-db-reader": "^0.2.1",
     "mmdb-lib": "^2.0.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
-    "fuse.js": "^7.0.0"
+    "winston": "^3.11.0"
   },
   "jest": {
     "testEnvironment": "node",

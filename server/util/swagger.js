@@ -17,7 +17,7 @@ const options = {
 };
 
 const specs = swaggerJsdoc(options);
-Logger.debug(specs);
+logger.debug(specs);
 logger.debug(Response.json(serve))
 logger.debug(new Response(setup(specs)).formData)
 
