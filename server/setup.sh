@@ -46,6 +46,13 @@ mv ./sk ./sikkim
 # Changing PWD back to /server/
 cd ../..
 
+mkdir postal_address &> /dev/null
+cd postal_address
+curl -L https://github.com/ramSeraph/indian_admin_boundaries/releases/download/postal/PincodeBoundaries.geojsonl.7z > PincodeBoundaries.geojsonl.7z
+7z x PincodeBoundaries.geojsonl.7z
+rm PincodeBoundaries.geojsonl.7z
+cd ..
+
 # Updating geoJSON files through script to make them usable in server
 cd scripts
 bun parse.geojson.js
