@@ -124,7 +124,7 @@ function individualQuery(country, geoLocationLevel, coordinates) {
 }
 
 export const app = new Router()
-  .get('/', () => new Response(Bun.file(__dirname + '/www/index.html')))
+  .get('/', () => new Response(Bun.file(import.meta.dir + '/www/index.html')))
   .get('/city/:ip', (ctx) => {
     try {
       const resp = reader.city(ctx.params.ip);
