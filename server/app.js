@@ -298,5 +298,5 @@ app.port = (process.env.PORT || 3000);
 app.hostname = '0.0.0.0';
 
 
-swaggerApp.listen(3001, () => console.log('Swagger listening on port 3000'))
+swaggerApp.listen(3001, () => console.log('Swagger listening on port 3001'))
 app.listen();
