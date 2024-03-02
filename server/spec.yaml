@@ -338,3 +338,40 @@ paths:
           description: No query found
         '404':
           description: Query not Found in geojson
+  /getGeoJSON:
+    get:
+      summary: Get GeoJSON based on location name and level
+      tags:
+        - GeoJSON
+      parameters:
+        - name: locationName
+          in: query
+          description: Name of the location to search for
+          required: true
+          schema:
+            type: string
+        - name: locationLevel
+          in: query
+          description: Geolocation level to search on (district|state|subdistrict|village)
+          required: true
+          schema:
+            type: string
+        - name: filters
+          in: query
+          description: Additional filters in JSON format
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeoLocationResponseObject'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
