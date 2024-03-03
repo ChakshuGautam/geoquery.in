@@ -43,13 +43,14 @@ Once Docker is installed, follow the steps below to set up and run the Docker co
 4. Build the Docker image using the provided Dockerfile with the following command:
 
    ```bash
-   sudo docker build . -t geoquery
+   docker build . -t geoquery
    ```
+   > Note: After adding your user to the Docker group, you can run Docker commands without using `sudo`. If you haven't added your user to the Docker group, remember to use `sudo` before Docker commands.
 
 5. Run the Docker container using the following command:
 
    ```bash
-   sudo docker run -d geoquery
+   docker run -d geoquery
    ```
 
 This command will start the Docker container in detached mode, allowing you to interact with the application.
@@ -63,7 +64,7 @@ Once the Docker container is running, you can interact with the application usin
     To check the status of the Docker container, use the following command:
     
     ```bash
-    sudo docker ps
+    docker ps
     ```
     
     This command will display a list of running Docker containers along with their details. Store "Container ID"
@@ -73,7 +74,7 @@ Once the Docker container is running, you can interact with the application usin
     To retrieve the IP address of the Docker container, use the following command:
     
     ```bash
-    sudo docker inspect <container_id> | grep -i "ipaddress" | grep -o '"IPAddress": "[^"]*' | grep -o '[^"]*$' | head -n1
+    docker inspect <container_id> | grep -i "ipaddress" | grep -o '"IPAddress": "[^"]*' | grep -o '[^"]*$' | head -n1
     ```
     
     Replace `<container_id>` with the ID of the running Docker container.
