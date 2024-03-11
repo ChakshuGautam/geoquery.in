@@ -5,3 +5,4 @@ node_modules
 server/.DS_Store
 /server/geojson-data/indian_village_boundaries
 /server/geojson-data/*json
+/server/postal_address/

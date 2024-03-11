@@ -6,6 +6,7 @@ import Bun from 'bun';
 import express from 'express';
 import swagger from './util/swagger';
 import config from './config.json';
+import readline from 'readline';
 import { Level, LocationSearch } from './location.search';
 
 const buffer = fs.readFileSync(`${import.meta.dir}/db.mmdb`);
@@ -154,6 +155,7 @@ export const app = new Router()
       return new Response('Error processing IP addresses', { status: 500 });
     }
   })
+  //  Georev API
   .get('/georev', (ctx) => {
     try {
       let url = new URL(ctx.url);
@@ -286,6 +288,50 @@ export const app = new Router()
       return Response.json({ 
         status: 'fail',
         error: error.name 
+      }, { status: 500 });
+    }
+  })
+  .post('/postalcode/:pincode',async (req)=>{
+    try{
+      const pincode = req.params["pincode"];
+      const rl = readline.createInterface({
+        input: fs.createReadStream('./postal_address/PincodeBoundaries.geojsonl'),
+      });
+      var out;
+      rl.on('line', async (line) => {
+        const feature = JSON.parse(line);
+        const geometry = feature.geometry;
+        const properties = feature.properties;
+        if(properties["pincode"] == pincode){
+          const latitude = parseFloat(geometry.coordinates[0][0][1]);
+          const longitude = parseFloat(geometry.coordinates[0][0][0]);
+          const resp = await individualQuery(config.country, GeoLocationLevel.SUBDISTRICT, [longitude, latitude]);
+          if(!resp){
+            return Response.json({
+              status: "fail",
+              error: `No GeoLocation found for lat: ${latitude}, lon ${longitude}`
+            }, { status: 404 });
+          }
+          out = JSON.parse(JSON.stringify(resp));
+          rl.close();
+        }
+      });
+      let promise = new Promise((resolve, reject) => {
+        rl.on('close', () => {
+          resolve(out);
+        });
+      }
+      );
+      out = await promise;
+      return Response.json({
+        status: "success",
+        "StateName": out.stname,
+        "DistrictName": out.dtname,
+      });
+    }catch(err){
+      return Response.json({ 
+        status: 'fail',
+        error: err.name, 
       }, { status: 500 });
     }
   });
