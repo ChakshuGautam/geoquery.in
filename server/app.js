@@ -124,7 +124,7 @@ function individualQuery(country, geoLocationLevel, coordinates) {
 }
 
 export const app = new Router()
-  .get('/', () => new Response(Bun.file(__dirname + '/www/index.html')))
+  .get('/', () => new Response(Bun.file(import.meta.dir + '/www/index.html')))
   .get('/city/:ip', (ctx) => {
     try {
       const resp = reader.city(ctx.params.ip);
@@ -298,5 +298,5 @@ app.port = (process.env.PORT || 3000);
 app.hostname = '0.0.0.0';
 
 
-swaggerApp.listen(3001, () => console.log('Swagger listening on port 3000'))
+swaggerApp.listen(3001, () => console.log('Swagger listening on port 3001'))
 app.listen();
