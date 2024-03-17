@@ -1,7 +1,9 @@
 import fgdb from 'fgdb';
 import * as fs from 'fs/promises';
 import * as path from "path";
+import Logger from '../util/logger';
 
+const logger = new Logger('gdb_to_geojson.js');
 const inputDir = `${import.meta.dir}/../geojson-data/indian_villages_boundaries.zip`;
 const outputDir = `${import.meta.dir}/../geojson-data/indian_village_boundaries`;
 
@@ -20,10 +22,10 @@ const convertGDBtoGeoJSON = async (gdbFileBuffer, outputFilePath) => {
     const geoJSON = await fgdb(gdbFileBuffer);
     const contentToWrite = JSON.stringify(geoJSON);
     await fs.writeFile(outputFilePath, contentToWrite, 'utf8');
-    console.log("Converted and saved:", outputFilePath);
+    logger.debug("Converted and saved:", outputFilePath);
 
   } catch (error) {
-    console.error("Error converting GDB to GeoJSON:", error);
+    logger.error("Error converting GDB to GeoJSON:", error);
   }
 };
 
@@ -45,5 +47,5 @@ const processFiles = async () => {
 
 
 processFiles().then(r => {
-  console.log("Converted all gdbs to geJSON");
+  logger.debug("Converted all gdbs to geJSON");
 });
