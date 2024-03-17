@@ -2,7 +2,8 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import {generateHTML, serve, setup} from 'swagger-ui-express';
 import yaml from 'js-yaml';
 import fs from 'fs';
-
+import Logger from './logger';
+const logger = new Logger('swagger.js');
 const version = process.env.npm_package_version;
 
 const definition = yaml.load(fs.readFileSync(`${import.meta.dir}/../spec.yaml`, 'utf8'));
@@ -16,11 +17,12 @@ const options = {
 };
 
 const specs = swaggerJsdoc(options);
-
-console.log(Response.json(serve))
-console.log(new Response(setup(specs)).formData)
+logger.debug(specs);
+logger.debug(Response.json(serve))
+logger.debug(new Response(setup(specs)).formData)
 
 function swagger(app) {
+    logger.debug('Setting up Swagger');
     // Swagger Page
     app.use('/docs', serve, setup(specs));
     

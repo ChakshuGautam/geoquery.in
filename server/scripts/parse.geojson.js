@@ -1,10 +1,11 @@
 import * as fs from 'fs';
+import Logger from '../util/logger';
 
-
+const logger = new Logger('parse.geojson.js');
 const geoJsonFilesPath = `${import.meta.dir}/../geojson-data`;
 let featuresLength;
 
-console.log('Parsing INDIA_STATE');
+logger.debug('Parsing INDIA_STATE');
 const INDIA_STATE = JSON.parse(fs.readFileSync(`${geoJsonFilesPath}/INDIA_STATE.geojson`, 'utf8'));
 featuresLength = INDIA_STATE.features.length;
 for (let i = 0; i < featuresLength; i++) {
@@ -17,7 +18,7 @@ for (let i = 0; i < featuresLength; i++) {
 }
 fs.writeFileSync(`${geoJsonFilesPath}/INDIA_STATE.geojson`, JSON.stringify(INDIA_STATE));
 
-console.log('Parsing INDIA_DISTRICT');
+logger.debug('Parsing INDIA_DISTRICT');
 const INDIA_DISTRICT = JSON.parse(fs.readFileSync(`${geoJsonFilesPath}/INDIA_DISTRICT.geojson`, 'utf8'));
 featuresLength = INDIA_DISTRICT.features.length;
 for (let i = 0; i < featuresLength; i++) {
@@ -29,7 +30,7 @@ for (let i = 0; i < featuresLength; i++) {
 }
 fs.writeFileSync(`${geoJsonFilesPath}/INDIA_DISTRICT.geojson`, JSON.stringify(INDIA_DISTRICT));
 
-console.log('Parsing INDIA_SUBDISTRICT');
+logger.debug('Parsing INDIA_SUBDISTRICT');
 const INDIA_SUBDISTRICT = JSON.parse(fs.readFileSync(`${geoJsonFilesPath}/INDIA_SUBDISTRICT.geojson`, 'utf8'));
 featuresLength = INDIA_SUBDISTRICT.features.length;
 for (let i = 0; i < featuresLength; i++) {
@@ -42,15 +43,15 @@ for (let i = 0; i < featuresLength; i++) {
 fs.writeFileSync(`${geoJsonFilesPath}/INDIA_SUBDISTRICT.geojson`, JSON.stringify(INDIA_SUBDISTRICT));
 
 
-console.log('Parsing indian_village_boundaries geoJSONs')
+logger.debug('Parsing indian_village_boundaries geoJSONs');
 var states = fs.readdirSync(`${geoJsonFilesPath}/indian_village_boundaries/`);
 
 for (const state of states) {
-  console.log(`Parsing geoJSON(s) for state ${state}`)
+  logger.debug(`Parsing geoJSON(s) for state ${state}`);
   var stateFiles = fs.readdirSync(`${geoJsonFilesPath}/indian_village_boundaries/${state}`)
   for (const file of stateFiles) {
     if (!file.endsWith(`.geojson`)) continue;
-    console.log(`Parsing ${file}`);
+    logger.debug(`Parsing ${file}`);
     const villagesGeoJson = JSON.parse(fs.readFileSync(`${geoJsonFilesPath}/indian_village_boundaries/${state}/${file}`));
     const geoJsonLength = villagesGeoJson.features.length;
     for (let i = 0; i < geoJsonLength; i++) {
