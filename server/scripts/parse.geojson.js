@@ -46,27 +46,27 @@ fs.writeFileSync(`${geoJsonFilesPath}/INDIA_SUBDISTRICT.geojson`, JSON.stringify
 logger.debug('Parsing indian_village_boundaries geoJSONs');
 var states = fs.readdirSync(`${geoJsonFilesPath}/indian_village_boundaries/`);
 
-for (const state of states) {
-  logger.debug(`Parsing geoJSON(s) for state ${state}`);
-  var stateFiles = fs.readdirSync(`${geoJsonFilesPath}/indian_village_boundaries/${state}`)
-  for (const file of stateFiles) {
-    if (!file.endsWith(`.geojson`)) continue;
-    logger.debug(`Parsing ${file}`);
-    const villagesGeoJson = JSON.parse(fs.readFileSync(`${geoJsonFilesPath}/indian_village_boundaries/${state}/${file}`));
-    const geoJsonLength = villagesGeoJson.features.length;
-    for (let i = 0; i < geoJsonLength; i++) {
-      const locationProperty = villagesGeoJson.features[i].properties;
-      villagesGeoJson.features[i].properties = {
-        dtName: locationProperty.DISTRICT,
-        stName: locationProperty.STATE,
-        sdtName: locationProperty.SUB_DIST,
-        levelLocationName: locationProperty.NAME,
-        ...locationProperty
-      }
-    }
-    fs.writeFileSync(`${geoJsonFilesPath}/indian_village_boundaries/${state}/${file}`, JSON.stringify(villagesGeoJson));
-  }
-}
+// for (const state of states) {
+//   logger.debug(`Parsing geoJSON(s) for state ${state}`);
+//   var stateFiles = fs.readdirSync(`${geoJsonFilesPath}/indian_village_boundaries/${state}`)
+//   for (const file of stateFiles) {
+//     if (!file.endsWith(`.geojson`)) continue;
+//     logger.debug(`Parsing ${file}`);
+//     const villagesGeoJson = JSON.parse(fs.readFileSync(`${geoJsonFilesPath}/indian_village_boundaries/${state}/${file}`));
+//     const geoJsonLength = villagesGeoJson.features.length;
+//     for (let i = 0; i < geoJsonLength; i++) {
+//       const locationProperty = villagesGeoJson.features[i].properties;
+//       villagesGeoJson.features[i].properties = {
+//         dtName: locationProperty.DISTRICT,
+//         stName: locationProperty.STATE,
+//         sdtName: locationProperty.SUB_DIST,
+//         levelLocationName: locationProperty.NAME,
+//         ...locationProperty
+//       }
+//     }
+//     fs.writeFileSync(`${geoJsonFilesPath}/indian_village_boundaries/${state}/${file}`, JSON.stringify(villagesGeoJson));
+//   }
+// }
 
 const masterLocationNamesJson = require(`${geoJsonFilesPath}/MASTER_LOCATION_NAMES.json`)
 fs.writeFileSync(`${geoJsonFilesPath}/PARSED_MASTER_LOCATION_NAMES.json`, JSON.stringify(masterLocationNamesJson));
