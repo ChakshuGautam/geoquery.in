@@ -137,13 +137,20 @@ function individualQuery(country, geoLocationLevel, coordinates) {
 export const app = new Router()
   .get('/', () => new Response(Bun.file(__dirname + '/www/index.html')))
   .get('/city/:ip', (ctx) => {
+    if (ctx.params.ip === '') {
+      return Response.json({
+        message: 'No IP provided in params'
+      }, { status: 400 })
+    }
     try {
       const resp = reader.city(ctx.params.ip);
       logger.info(`City Success Response: ${JSON.stringify(resp)}`);
       return Response.json(formatSuccessResponse(resp));
     } catch (error) {
       logger.error(`Error processing IP: ${ctx.params.ip}, Error: ${error.name}`);
-      return Response.json(formatErrorResponse(error,ctx.params.ip));
+      return Response.json({
+        message: `Error processing IP: ${ctx.params.ip}, Error: ${error.name}`
+      }, { status: 404 });
     }
   })
   .post('/city/batch', async (req) => {
