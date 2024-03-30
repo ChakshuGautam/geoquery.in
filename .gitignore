@@ -1,11 +1,38 @@
-node_modules
+# compiled output
+/dist
+/node_modules
 
-.idea
-.DS_store
-server/.DS_Store
-/server/geojson-data/indian_village_boundaries
-/server/geojson-data/*json
-/server/parsed_geojson
-/server/scripts/combined.log
-/server/scripts/error.log
-/server/combined.log
+src/config/env
+src/geojson-data
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+
+# Tests
+/coverage
+/.nyc_output
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

@@ -1,149 +1,73 @@
-<h1 align="center">GeoQuery.in</h1>
-<h4 align="center">Open Mapping Infrastructure</h4>
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+</p>
 
-### Vision
-Our [vision](./vision.md).
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-### Example
-See code example in the [server](./server/app.js) folder.
+  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+    <p align="center">
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
+<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
+<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
+<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
+<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
+<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
+  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
+    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
+  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
+</p>
+  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
+  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-### Setup Server
+## Description
 
-Run `./setup.sh`. This script will install bun and download required files to setup server
-```sh
-cd server
-./setup.sh
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+
+## Installation
+
+```bash
+$ npm install
 ```
 
-Start Server
-```sh
-bun app.js
+## Running the app
+
+```bash
+# development
+$ npm run start
+
+# watch mode
+$ npm run start:dev
+
+# production mode
+$ npm run start:prod
 ```
 
-### Docker Container Setup and Usage Guide
+## Test
 
-This guide provides instructions for using the Docker container to deploy and interact with the application. The Docker container contains an application that provides location information based on district centroids.
+```bash
+# unit tests
+$ npm run test
 
-#### Prerequisites
+# e2e tests
+$ npm run test:e2e
 
-Before getting started, ensure that you have Docker installed on your system. Refer to the [Docker installation documentation](https://docs.docker.com/get-docker/) for installation instructions based on your operating system.
-
-#### Setup Docker Container
-
-Once Docker is installed, follow the steps below to set up and run the Docker container:
-
-1. Clone the repository containing the Dockerfile and application files.
-    ```bash
-    git clone https://github.com/ChakshuGautam/geoquery.in
-    ```
-2. Change working dir to `server`
-    ```bash
-    cd geoquery.in/server
-    ```
-4. Build the Docker image using the provided Dockerfile with the following command:
-
-   ```bash
-   docker build . -t geoquery
-   ```
-   > Note: After adding your user to the Docker group, you can run Docker commands without using `sudo`. If you haven't added your user to the Docker group, remember to use `sudo` before Docker commands.
-
-5. Run the Docker container using the following command:
-
-   ```bash
-   docker run -d geoquery
-   ```
-
-This command will start the Docker container in detached mode, allowing you to interact with the application.
-
-#### Interacting with the Application
-
-Once the Docker container is running, you can interact with the application using the provided commands.
-
-1. Check Docker Container Status
-
-    To check the status of the Docker container, use the following command:
-    
-    ```bash
-    docker ps
-    ```
-    
-    This command will display a list of running Docker containers along with their details. Store "Container ID"
-
-2. Retrieve Container IP Address
-
-    To retrieve the IP address of the Docker container, use the following command:
-    
-    ```bash
-    docker inspect <container_id> | grep -i "ipaddress" | grep -o '"IPAddress": "[^"]*' | grep -o '[^"]*$' | head -n1
-    ```
-    
-    Replace `<container_id>` with the ID of the running Docker container.
-
-3. Access Application Endpoint
-
-    To access the application endpoint and retrieve location information, use the following command:
-    
-    ```bash
-    curl "http://<container_ip_address>:3000/location/DISTRICT/centroid?query=<location_query>"
-    ```
-    
-    Replace `<container_ip_address>` with the IP address of the Docker container obtained in the previous step, and `<location_query>` with the desired location query.
-    
-    Example:
-    
-    ```bash
-    curl "http://172.17.0.2:3000/location/DISTRICT/centroid?query=lucknow"
-    ```
-    > Here we have replaced `<container_ip_address>` with the actual IP address we obtained.
-    This command will retrieve information about the centroid of the district "Lucknow".
-
-
-### API
-Works with both ipv4 and ipv6.
-
-Get geolocation corresponding to given IP
-```sh
-curl https://geoip.samagra.io/city/128.101.101.101
+# test coverage
+$ npm run test:cov
 ```
 
-Get geolocation for given `lat` & `lon`
-```shell
-curl https://geoip.samagra.io/georev?lat=28.7041&lon=77.1025
-```
+## Support
 
-Get polygon centroid for given `STATE/DISTRICT/SUBDISTRICT` with some query
-```shell
-curl https://geoip.samagra.io/location/DISTRICT/centroid?query=lucknow
-```
+Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-Fuzzy search location by name with `STATE/DISTRICT/SUBDISTRICT/VILLAGE` levels with query & location level filters in request body, `filter` keys should one of these `STATE/DISTRICT/SUBDISTRICT/VILLAGE`.
-```shell
-curl --location 'https://geoip.samagra.io/location/VILLAGE/fuzzysearch' \
---header 'Content-Type: application/json' \
---data '{
-    "query": "Arong",
-    "filter": {
-        "STATE": "Andaman & Nicobar Islands",
-        "DISTRICT": "Nicobars"
-    }
-}'
-# Response
-{
-    "matches": [
-        {
-            "state": "Andaman & Nicobar Islands",
-            "district": "Nicobars",
-            "subDistrict": "Car Nicobar",
-            "village": "Arong"
-        }
-    ]
-}
-```
-### Notes
+## Stay in touch
 
-DB will remain updated automatically. Please create a ticket if you see some issues.
+- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
+- Website - [https://nestjs.com](https://nestjs.com/)
+- Twitter - [@nestframework](https://twitter.com/nestframework)
 
+## License
 
-### Contribution Guide
-1. Please consider issues up from grabs.
-2. It will only be assigned with a PR.
+Nest is [MIT licensed](LICENSE).
