@@ -1,48 +1,21 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
-  HttpStatus,
-  Logger,
-  Param,
-  Post,
-} from '@nestjs/common';
-import { Reader, ReaderModel } from '@maxmind/geoip2-node';
-import * as fs from 'fs';
-import * as path from 'path';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
+import { CityService } from './city.service';
 import { formatSuccessResponse } from 'src/utils/serializer/success';
 import { formatErrorResponse } from 'src/utils/serializer/error';
-
+@ApiTags('/city')
 @Controller('city')
 export class CityController {
-  private readonly reader: ReaderModel;
-  private readonly logger = new Logger(CityController.name);
-
-  constructor() {
-    const buffer = fs.readFileSync(path.join(process.cwd(), './db.mmdb'));
-    this.reader = Reader.openBuffer(buffer);
-  }
+  constructor(private readonly cityService: CityService) {}
 
   @Get(':ip')
   getCity(@Param('ip') ip: string) {
-    if (!ip) {
-      throw new HttpException(
-        'No IP provided in params',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     try {
-      const resp = this.reader.city(ip);
-      this.logger.log(`City Success Response: ${JSON.stringify(resp)}`);
-      return formatSuccessResponse(resp);
+      const city = this.cityService.getCity(ip);
+      return formatSuccessResponse(city);
     } catch (error) {
-      this.logger.error(`Error processing IP: ${ip}, Error: ${error.name}`);
-      throw new HttpException(
-        `Error processing IP: ${ip}, Error: ${error.name}`,
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -51,8 +24,8 @@ export class CityController {
     try {
       const promises = ips.map((ip) => {
         try {
-          const response = this.reader.city(ip);
-          return formatSuccessResponse(response);
+          const city = this.cityService.getCity(ip);
+          return formatSuccessResponse(city);
         } catch (error) {
           return formatErrorResponse(error, ip);
         }
@@ -61,10 +34,7 @@ export class CityController {
       const results = await Promise.all(promises);
       return results;
     } catch (error) {
-      throw new HttpException(
-        'Error processing IP addresses',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

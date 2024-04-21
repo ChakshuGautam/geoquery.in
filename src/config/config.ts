@@ -1,6 +1,6 @@
 export const config = () => ({
     NODE_ENV: process.env.NODE_ENV || 'default',
-    port: process.env.PORT,
+    port: parseInt(process.env.PORT) || 3000,
     requiredGeoLocationLevels: [
       "SUBDISTRICT",
       "DISTRICT",
