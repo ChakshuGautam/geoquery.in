@@ -19,6 +19,61 @@ Start Server
 ```sh
 bun app.js
 ```
+## For Windows users, follow these steps:
+
+### Setting up Project on Windows Subsystem for Linux (WSL)
+
+## Step 1: Install WSL
+For detailed instructions on installing WSL, refer to the [WSL Documentation](https://docs.microsoft.com/en-us/windows/wsl/install).
+
+1. **Enable WSL**:
+   - Open the Start menu.
+   - Type "WSL" and select "Windows Subsystem for Linux" from the search results.
+   - This will open the default     Linux distribution installed on your system (typically Ubuntu) in a command line interface.
+
+2. **Access Windows Files in WSL**:
+   - Navigate to your Windows files using `/mnt/`.
+   - Example: `cd /mnt/c/Users/YourUsername/geoquery.in/`.
+   - Replace YourUsername with your Windows username 
+    - This command will take you to the `geoquery.in` folder  in your Windows file system.
+
+
+## Step 2: Install dos2unix
+
+1. **Update Packages**:
+   - Run: `sudo apt update`
+
+2. **Install dos2unix**:
+   - Run: `sudo apt install dos2unix`
+
+## Step 3: Convert Line Endings
+
+1. **Navigate to Project Directory**:
+   - Use `cd server` 
+
+2. **Convert Line Endings**:
+   - Run: `dos2unix setup.sh`
+
+## Step 4: Run Setup Script
+
+1. **Run Setup Script**:
+   - Execute: `./setup.sh`
+
+## Step 5: Start the Server
+
+1. **Start Server**:
+   - Run: `bun app.js`
+
+## Alternative: GitHub Codespaces
+
+1. **Open GitHub Codespaces**:
+   - Navigate to [geoquery.in](https://github.com/ChakshuGautam/geoquery.in) GitHub repository.
+   - Click "Code" and select "Open with Codespaces".
+   - `cd server`
+   -  Execute: `./setup.sh`
+   - Run: `bun app.js`             
+
+#
 
 ### Docker Container Setup and Usage Guide
 
