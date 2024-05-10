@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
-import { formatCentroidResponse } from 'src/utils/serializer/success';
+import { formatCentroidResponse } from '../../utils/serializer/success';
 import { LocationSearchService } from './location.search-service';
 import { LocationService } from './location.service';
 @ApiTags('/location')

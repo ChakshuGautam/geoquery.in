@@ -2,8 +2,8 @@ import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from '@
 import { ApiTags } from '@nestjs/swagger';
 
 import { CityService } from './city.service';
-import { formatSuccessResponse } from 'src/utils/serializer/success';
-import { formatErrorResponse } from 'src/utils/serializer/error';
+import { formatSuccessResponse } from '../../utils/serializer/success';
+import { formatErrorResponse } from '../../utils/serializer/error';
 @ApiTags('/city')
 @Controller('city')
 export class CityController {

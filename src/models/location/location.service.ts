@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as turf from '@turf/turf';
-import { GeojsonService } from 'src/services/geojson/geojson.service';
+import { GeojsonService } from '../..//services/geojson/geojson.service';
 
 @Injectable()
 export class LocationService {

@@ -1,7 +1,7 @@
 import { Controller, Get, Logger, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { GeorevService } from './georev.service';
-import { formatGeorevSuccessResponse } from 'src/utils/serializer/success';
+import { formatGeorevSuccessResponse } from '../..//utils/serializer/success';
 
 @ApiTags('/georev')
 @Controller('georev')

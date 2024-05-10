@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { GeojsonService } from 'src/services/geojson/geojson.service';
-import { GeoqueryService } from 'src/services/geoquery/geoquery.service';
+import { GeojsonService } from '../../services/geojson/geojson.service';
+import { GeoqueryService } from '../../services/geoquery/geoquery.service';
 
 @Injectable()
 export class GeorevService {

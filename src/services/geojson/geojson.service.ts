@@ -41,7 +41,6 @@ export class GeojsonService {
       }
     } catch (err) {
       this.logger.error(`Error loading GeoJson files: ${err}`);
-      process.exit();
     }
   }
 

@@ -3,7 +3,8 @@
 /node_modules
 
 src/config/env
-src/geojson-data
+src/geojson-data/indian_village_boundaries
+src/geojson-data/*json
 
 # Logs
 logs
