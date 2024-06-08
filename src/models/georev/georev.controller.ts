@@ -8,7 +8,7 @@ import { formatGeorevSuccessResponse } from '../..//utils/serializer/success';
 export class GeorevController {
   private readonly logger = new Logger(GeorevController.name);
 
-  constructor(private readonly geoRevService: GeorevService){}
+  constructor(private readonly geoRevService: GeorevService) {}
 
   @Get()
   async getGeoRev(@Query('lat') lat: string, @Query('lon') lon: string) {

@@ -83,7 +83,7 @@ describe('CityService', () => {
         isSatelliteProvider: false,
         isTorExitNode: false,
         ipAddress: '2401:4900:1c82:377e:bb89:dfc9:28a1:1e06',
-        network: '2401:4900:1c82::/48',
+        network: '2401:4900:1c82::/47',
       },
       city: {
         geonameId: 1264733,
@@ -105,7 +105,7 @@ describe('CityService', () => {
         timeZone: 'Asia/Kolkata',
       },
       postal: {
-        code: '226004',
+        code: '226016',
       },
       subdivisions: [
         {

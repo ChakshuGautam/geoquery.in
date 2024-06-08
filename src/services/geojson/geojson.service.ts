@@ -13,7 +13,9 @@ export class GeojsonService {
 
   constructor(private configService: ConfigService) {
     this.geoJsonFilesPath = path.join(process.cwd(), './src/geojson-data'); // Adjust the path as needed
-    this.requiredGeoLocationLevels = this.configService.get<Array<string>>('requiredGeoLocationLevels');
+    this.requiredGeoLocationLevels = this.configService.get<Array<string>>(
+      'requiredGeoLocationLevels',
+    );
     this.country = this.configService.get<string>('country');
     this.loadGeoJsonFiles();
   }

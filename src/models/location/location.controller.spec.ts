@@ -64,12 +64,12 @@ describe('LocationController', () => {
           useValue: {
             getCentroid: jest.fn(() => ({
               properties: {
-                levelLocationName: "Lucknow",
-                dtname: "Lucknow",
-                stname: "UTTAR PRADESH",
-                stcode11: "09",
-                dtcode11: "157",
-                year_stat: "2011_c",
+                levelLocationName: 'Lucknow',
+                dtname: 'Lucknow',
+                stname: 'UTTAR PRADESH',
+                stcode11: '09',
+                dtcode11: '157',
+                year_stat: '2011_c',
                 SHAPE_Length: 424086.646831452,
                 SHAPE_Area: 3190740670.6066375,
                 OBJECTID: 229,
@@ -104,13 +104,13 @@ describe('LocationController', () => {
   it('should call getCentroid method with correct parameters', () => {
     const result = controller.getCentroid('DISTRICT', 'lucknow');
     expect(result).toEqual({
-      status: "success",
-      state: "UTTAR PRADESH",
-      district: "Lucknow",
-      subDistrict: "",
-      city: "",
-      block: "",
-      village: "",
+      status: 'success',
+      state: 'UTTAR PRADESH',
+      district: 'Lucknow',
+      subDistrict: '',
+      city: '',
+      block: '',
+      village: '',
       lat: 26.830190863213858,
       lon: 80.89119983155268,
     });

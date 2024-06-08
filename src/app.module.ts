@@ -8,11 +8,16 @@ import { ConfigModule } from '@nestjs/config';
 import { config } from './config/config';
 
 @Module({
-  imports: [CityModule, GeorevModule, LocationModule, ConfigModule.forRoot({
-    envFilePath: `${process.cwd()}/config/env/${process.env.NODE_ENV || 'default'}.env`,
-    load: [config],
-    isGlobal: true
-  })],
+  imports: [
+    CityModule,
+    GeorevModule,
+    LocationModule,
+    ConfigModule.forRoot({
+      envFilePath: `${process.cwd()}/config/env/${process.env.NODE_ENV || 'default'}.env`,
+      load: [config],
+      isGlobal: true,
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { LocationController } from './location.controller';
 import { LocationService } from './location.service';
 import { LocationSearchService } from './location.search-service';
-import { GeojsonService } from 'src/services/geojson/geojson.service';
+import { GeojsonService } from '../../services/geojson/geojson.service';
 import * as path from 'path';
 
 @Module({

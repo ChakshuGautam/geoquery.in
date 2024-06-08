@@ -13,13 +13,18 @@ export class GeoqueryService {
     });
   }
 
-  individualQuery(country: string, geoLocationLevel: string, coordinates, geoJsonFiles) {
+  individualQuery(
+    country: string,
+    geoLocationLevel: string,
+    coordinates,
+    geoJsonFiles,
+  ) {
     const pointToSearch = turf.point(coordinates);
-    for (let feature of geoJsonFiles[`${country}_${geoLocationLevel}`]
+    for (const feature of geoJsonFiles[`${country}_${geoLocationLevel}`]
       .features) {
       if (feature.geometry.type === 'Polygon') {
         this.logger.log(`Checking if point is in Polygon`);
-        let poly = turf.polygon(
+        const poly = turf.polygon(
           feature.geometry.coordinates,
           feature.properties,
         );

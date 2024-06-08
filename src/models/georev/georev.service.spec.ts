@@ -66,7 +66,9 @@ describe('GeorevService', () => {
     const lat = '10.12345';
     const lon = '20.67890';
 
-    jest.spyOn(service, 'getGeoRev').mockReturnValue(constants.getGeoRev.success);
+    jest
+      .spyOn(service, 'getGeoRev')
+      .mockReturnValue(constants.getGeoRev.success);
 
     const result = service.getGeoRev(lat, lon);
 
@@ -74,8 +76,10 @@ describe('GeorevService', () => {
   });
 
   it('should handle a missing coordinate', () => {
-    jest.spyOn(service, 'getGeoRev').mockReturnValue(Error('coordinates must contain numbers'))
-    let result = service.getGeoRev(null, '20.67890');
+    jest
+      .spyOn(service, 'getGeoRev')
+      .mockReturnValue(Error('coordinates must contain numbers'));
+    const result = service.getGeoRev(null, '20.67890');
     expect(result).toEqual(Error('coordinates must contain numbers'));
   });
 });

@@ -21,20 +21,16 @@ describe('GeorevController', () => {
           useValue: {
             get: jest.fn((key: string) => {
               if (key === 'requiredGeoLocationLevels') {
-                return [
-                  "SUBDISTRICT",
-                  "DISTRICT",
-                  "STATE"
-                ];
-              } else if(key === 'country'){
-                return 'INDIA'
+                return ['SUBDISTRICT', 'DISTRICT', 'STATE'];
+              } else if (key === 'country') {
+                return 'INDIA';
               } else if (key === 'geoLocationLevels.SUBDISTRICT') {
                 return 'SUBDISTRICT';
               }
               return null;
-            })
-          }
-        }
+            }),
+          },
+        },
       ],
     }).compile();
 
@@ -83,7 +79,7 @@ describe('GeorevController', () => {
 
       expect(result).toEqual({
         status: 'fail',
-        error: "coordinates must contain numbers",
+        error: 'coordinates must contain numbers',
       });
     });
 

@@ -6,6 +6,6 @@ import { GeoqueryService } from '../../services/geoquery/geoquery.service';
 
 @Module({
   controllers: [GeorevController],
-  providers: [GeorevService, GeojsonService, GeoqueryService]
+  providers: [GeorevService, GeojsonService, GeoqueryService],
 })
 export class GeorevModule {}

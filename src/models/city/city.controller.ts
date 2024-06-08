@@ -1,9 +1,18 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { CityService } from './city.service';
 import { formatSuccessResponse } from '../../utils/serializer/success';
 import { formatErrorResponse } from '../../utils/serializer/error';
+
 @ApiTags('/city')
 @Controller('city')
 export class CityController {
@@ -31,8 +40,7 @@ export class CityController {
         }
       });
 
-      const results = await Promise.all(promises);
-      return results;
+      return await Promise.all(promises);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

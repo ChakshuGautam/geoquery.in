@@ -99,7 +99,7 @@ export class LocationSearchService {
       for (let nodeDepth = 0; nodeDepth < searchLevel.depth; nodeDepth++) {
         for (const filter of filters) {
           if (filter.level.depth !== nodeDepth) continue;
-          let filteredData = [];
+          const filteredData = [];
           for (let index = 0; index < processedData.length; index++) {
             if (
               processedData[index][`${filter.level.name}`]

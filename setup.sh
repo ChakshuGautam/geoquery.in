@@ -35,5 +35,6 @@ npx ts-node parse.geojson.ts
 # Changing PWD back to /server/
 cd - &> /dev/null
 
+# Going back to root
 cd ..
 stencil start

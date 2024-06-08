@@ -15,7 +15,9 @@ interface LocationProperty {
 }
 
 logger.debug('Parsing INDIA_STATE');
-const INDIA_STATE = JSON.parse(fs.readFileSync(`${geoJsonFilesPath}/INDIA_STATE.geojson`, 'utf8'));
+const INDIA_STATE = JSON.parse(
+  fs.readFileSync(`${geoJsonFilesPath}/INDIA_STATE.geojson`, 'utf8'),
+);
 let featuresLength = INDIA_STATE.features.length;
 for (let i = 0; i < featuresLength; i++) {
   const locationProperty: LocationProperty = INDIA_STATE.features[i].properties;
@@ -25,31 +27,46 @@ for (let i = 0; i < featuresLength; i++) {
     ...locationProperty,
   };
 }
-fs.writeFileSync(`${geoJsonFilesPath}/INDIA_STATE.geojson`, JSON.stringify(INDIA_STATE));
+fs.writeFileSync(
+  `${geoJsonFilesPath}/INDIA_STATE.geojson`,
+  JSON.stringify(INDIA_STATE),
+);
 
 logger.debug('Parsing INDIA_DISTRICT');
-const INDIA_DISTRICT = JSON.parse(fs.readFileSync(`${geoJsonFilesPath}/INDIA_DISTRICT.geojson`, 'utf8'));
+const INDIA_DISTRICT = JSON.parse(
+  fs.readFileSync(`${geoJsonFilesPath}/INDIA_DISTRICT.geojson`, 'utf8'),
+);
 featuresLength = INDIA_DISTRICT.features.length;
 for (let i = 0; i < featuresLength; i++) {
-  const locationProperty: LocationProperty = INDIA_DISTRICT.features[i].properties;
+  const locationProperty: LocationProperty =
+    INDIA_DISTRICT.features[i].properties;
   INDIA_DISTRICT.features[i].properties = {
     levelLocationName: locationProperty?.dtname,
     ...locationProperty,
   };
 }
-fs.writeFileSync(`${geoJsonFilesPath}/INDIA_DISTRICT.geojson`, JSON.stringify(INDIA_DISTRICT));
+fs.writeFileSync(
+  `${geoJsonFilesPath}/INDIA_DISTRICT.geojson`,
+  JSON.stringify(INDIA_DISTRICT),
+);
 
 logger.debug('Parsing INDIA_SUBDISTRICT');
-const INDIA_SUBDISTRICT = JSON.parse(fs.readFileSync(`${geoJsonFilesPath}/INDIA_SUBDISTRICT.geojson`, 'utf8'));
+const INDIA_SUBDISTRICT = JSON.parse(
+  fs.readFileSync(`${geoJsonFilesPath}/INDIA_SUBDISTRICT.geojson`, 'utf8'),
+);
 featuresLength = INDIA_SUBDISTRICT.features.length;
 for (let i = 0; i < featuresLength; i++) {
-  const locationProperty: LocationProperty = INDIA_SUBDISTRICT.features[i].properties;
+  const locationProperty: LocationProperty =
+    INDIA_SUBDISTRICT.features[i].properties;
   INDIA_SUBDISTRICT.features[i].properties = {
     levelLocationName: locationProperty?.sdtname,
     ...locationProperty,
   };
 }
-fs.writeFileSync(`${geoJsonFilesPath}/INDIA_SUBDISTRICT.geojson`, JSON.stringify(INDIA_SUBDISTRICT));
+fs.writeFileSync(
+  `${geoJsonFilesPath}/INDIA_SUBDISTRICT.geojson`,
+  JSON.stringify(INDIA_SUBDISTRICT),
+);
 
 logger.debug('Parsing indian_village_boundaries geoJSONs');
 const states = fs.readdirSync(`${geoJsonFilesPath}/indian_village_boundaries/`);
@@ -77,7 +94,12 @@ const states = fs.readdirSync(`${geoJsonFilesPath}/indian_village_boundaries/`);
 //   }
 // }
 
-const masterLocationNamesJson = require(`${geoJsonFilesPath}/MASTER_LOCATION_NAMES.json`);
-fs.writeFileSync(`${geoJsonFilesPath}/PARSED_MASTER_LOCATION_NAMES.json`, JSON.stringify(masterLocationNamesJson));
+const masterLocationNamesJson = require(
+  `${geoJsonFilesPath}/MASTER_LOCATION_NAMES.json`,
+);
+fs.writeFileSync(
+  `${geoJsonFilesPath}/PARSED_MASTER_LOCATION_NAMES.json`,
+  JSON.stringify(masterLocationNamesJson),
+);
 
 logger.debug('Parsing complete');

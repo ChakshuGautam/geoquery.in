@@ -40,7 +40,6 @@ export class LocationController {
     @Query('query') query: string,
   ) {
     try {
-
       if (!query) {
         this.logger.error(`No ${locationLevel} query found`);
         throw new HttpException(
