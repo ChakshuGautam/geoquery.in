@@ -47,5 +47,5 @@ src/.DS_Store
 /src/scripts/error.log
 /src/combined.log
 /src/geojson-data/
+/src/geoquery.in.data/
 db.mmdb
-

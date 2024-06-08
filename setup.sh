@@ -1,6 +1,15 @@
 mkdir ./src/geojson-data &> /dev/null
 
-cd ./src/geojson-data
+cd ./src
+
+git clone --depth=1 "https://github.com/35C4n0r/geoquery.in.data" geojson-data
+cd geojson-data
+rm -rf .git .gitattributes
+
+mv ./geojson-data/* .
+rmdir ./geojson-data
+
+mv ./db.mmdb ../../db.mmdb
 
 curl -Lo INDIA_DISTRICT.geojson "https://github.com/datta07/INDIAN-SHAPEFILES/raw/master/INDIA/INDIA_DISTRICTS.geojson"
 curl -Lo INDIA_SUBDISTRICT.geojson "https://github.com/datta07/INDIAN-SHAPEFILES/raw/master/INDIA/INDIAN_SUB_DISTRICTS.geojson"
@@ -34,7 +43,3 @@ npx ts-node parse.geojson.ts
 
 # Changing PWD back to /server/
 cd - &> /dev/null
-
-# Going back to root
-cd ..
-stencil start
