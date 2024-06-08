@@ -9,6 +9,7 @@ rm -rf .git .gitattributes
 mv ./geojson-data/* .
 rmdir ./geojson-data
 
+# Moving db.mmdb to project root
 mv ./db.mmdb ../../db.mmdb
 
 curl -Lo INDIA_DISTRICT.geojson "https://github.com/datta07/INDIAN-SHAPEFILES/raw/master/INDIA/INDIA_DISTRICTS.geojson"
