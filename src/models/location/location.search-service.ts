@@ -1,13 +1,41 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+
 const Fuse = require('fuse.js');
 import * as fs from 'fs';
 
-enum Level {
-  STATE = 'state',
-  DISTRICT = 'district',
-  SUBDISTRICT = 'subDistrict',
-  VILLAGE = 'village',
-}
+const logger = new Logger('ls-st');
+
+type LevelType = {
+  name: string;
+  path: string;
+  depth: number;
+};
+
+export const Level = Object.freeze({
+  STATE: {
+    name: 'state',
+    path: 'state',
+    depth: 0,
+  } as LevelType,
+  DISTRICT: {
+    name: 'district',
+    path: 'state->district',
+    depth: 1,
+  } as LevelType,
+  SUBDISTRICT: {
+    name: 'subDistrict',
+    path: 'state->district->subDistrict',
+    depth: 2,
+  } as LevelType,
+  VILLAGE: {
+    name: 'village',
+    path: 'state->district->subDistrict->village',
+    depth: 3,
+  } as LevelType,
+});
+
+type LevelKeys = keyof typeof Level;
+type Level = (typeof Level)[LevelKeys];
 
 @Injectable()
 export class LocationSearchService {
@@ -78,16 +106,16 @@ export class LocationSearchService {
     let processedData: any[];
 
     switch (searchLevel.name) {
-      case Level.STATE:
+      case Level.STATE.name:
         processedData = this.statePreProcessedData;
         break;
-      case Level.DISTRICT:
+      case Level.DISTRICT.name:
         processedData = this.districtPreprocessedData;
         break;
-      case Level.SUBDISTRICT:
+      case Level.SUBDISTRICT.name:
         processedData = this.subDistrictPreprocessedData;
         break;
-      case Level.VILLAGE:
+      case Level.VILLAGE.name:
         processedData = this.villagePreprocessedData;
         break;
       default:

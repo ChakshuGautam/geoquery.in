@@ -1,48 +1,124 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { LocationSearchService } from './location.search-service';
-import { ConfigService } from '@nestjs/config';
-import { GeojsonService } from '../../services/geojson/geojson.service';
+import * as fs from 'fs';
+import { Level, LocationSearchService } from './location.search-service';
 
-const FILE_PATH = 'filePath'; // Token to inject filePath string
+jest.mock('fs');
 
-describe('LocationService', () => {
-  let service: LocationSearchService;
+describe('LocationSearchService', () => {
+  let locationSearchService: LocationSearchService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        LocationSearchService,
+  const mockData = JSON.stringify([
+    {
+      state: 'State1',
+      districts: [
         {
-          provide: LocationSearchService,
-          useFactory: () => {
-            const filePath =
-              './src/geojson-data/PARSED_MASTER_LOCATION_NAMES.json';
-            return new LocationSearchService(filePath);
-          },
+          district: 'District1',
+          subDistricts: [
+            {
+              subDistrict: 'SubDistrict1',
+              villages: ['Village1', 'Village2'],
+            },
+          ],
         },
-        {
-          provide: ConfigService,
-          useValue: {
-            get: jest.fn((key: string) => {
-              if (key === 'requiredGeoLocationLevels') {
-                return ['SUBDISTRICT', 'DISTRICT', 'STATE'];
-              } else if (key === 'country') {
-                return 'INDIA';
-              } else if (key === 'geoLocationLevels.SUBDISTRICT') {
-                return 'SUBDISTRICT';
-              }
-              return null;
-            }),
-          },
-        },
-        GeojsonService,
       ],
-    }).compile();
+    },
+    {
+      state: 'State2',
+      districts: [
+        {
+          district: 'District2',
+          subDistricts: [
+            {
+              subDistrict: 'SubDistrict2',
+              villages: ['Village3', 'Village4'],
+            },
+          ],
+        },
+      ],
+    },
+  ]);
 
-    service = module.get<LocationSearchService>(LocationSearchService);
+  beforeEach(() => {
+    (fs.readFileSync as jest.Mock).mockReturnValue(mockData);
+    locationSearchService = new LocationSearchService('mockFilePath');
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(locationSearchService).toBeDefined();
+  });
+
+  it('should preprocess data correctly', () => {
+    expect(locationSearchService['villagePreprocessedData']).toHaveLength(4);
+    expect(locationSearchService['subDistrictPreprocessedData']).toHaveLength(
+      2,
+    );
+    expect(locationSearchService['districtPreprocessedData']).toHaveLength(2);
+    expect(locationSearchService['statePreProcessedData']).toHaveLength(2);
+  });
+
+  it('should return correct results for state level search', () => {
+    const result = locationSearchService.search(Level.STATE, 'State1', null);
+    expect(result).toEqual([{ state: 'State1' }]);
+  });
+
+  it('should return correct results for district level search', () => {
+    const result = locationSearchService.search(
+      Level.DISTRICT,
+      'District1',
+      null,
+    );
+    expect(result).toEqual([{ state: 'State1', district: 'District1' }]);
+  });
+
+  it('should return correct results for sub-district level search', () => {
+    const result = locationSearchService.search(
+      Level.SUBDISTRICT,
+      'SubDistrict1',
+      null,
+    );
+    expect(result).toEqual([
+      { state: 'State1', district: 'District1', subDistrict: 'SubDistrict1' },
+    ]);
+  });
+
+  it('should return correct results for village level search', () => {
+    const result = locationSearchService.search(
+      Level.VILLAGE,
+      'Village1',
+      null,
+    );
+    expect(result).toEqual([
+      {
+        state: 'State1',
+        district: 'District1',
+        subDistrict: 'SubDistrict1',
+        village: 'Village1',
+      },
+    ]);
+  });
+
+  it('should apply filters correctly', () => {
+    const filters = [{ level: Level.STATE, query: 'State1' }];
+    const result = locationSearchService.search(
+      Level.VILLAGE,
+      'Village1',
+      filters,
+    );
+    expect(result).toEqual([
+      {
+        state: 'State1',
+        district: 'District1',
+        subDistrict: 'SubDistrict1',
+        village: 'Village1',
+      },
+    ]);
+  });
+
+  it('should return no results if no matches are found', () => {
+    const result = locationSearchService.search(
+      Level.VILLAGE,
+      'NonExistentVillage',
+      null,
+    );
+    expect(result).toEqual([]);
   });
 });
