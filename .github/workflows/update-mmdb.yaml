@@ -1,29 +1,29 @@
-name: Download and Commit File
+# name: Download and Commit File
 
-on:
-  schedule:
-    - cron:  '0 12 * * 0'  # This will run the action daily at midnight
-  workflow_dispatch:  # This allows manual triggering
+# on:
+#   schedule:
+#     - cron:  '0 12 * * 0'  # This will run the action daily at midnight
+#   workflow_dispatch:  # This allows manual triggering
 
-jobs:
-  download-and-commit:
-    runs-on: ubuntu-latest
+# jobs:
+#   download-and-commit:
+#     runs-on: ubuntu-latest
 
-    permissions:
-        # Give the default GITHUB_TOKEN write permission to commit and push the
-        # added or changed files to the repository.
-        contents: write
+#     permissions:
+#         # Give the default GITHUB_TOKEN write permission to commit and push the
+#         # added or changed files to the repository.
+#         contents: write
 
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+#     steps:
+#     - name: Checkout Repository
+#       uses: actions/checkout@v2
       
-    - name: Download File
-      run: |
-        sudo apt install wget2 -y
-        wget2 -O server/db.mmdb https://mmdbcdn.posthog.net
+#     - name: Download File
+#       run: |
+#         sudo apt install wget2 -y
+#         wget2 -O server/db.mmdb https://mmdbcdn.posthog.net
 
-    - name: Commit and Push
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: Update db.mmdb
+#     - name: Commit and Push
+#       uses: stefanzweifel/git-auto-commit-action@v5
+#       with:
+#         commit_message: Update db.mmdb
