@@ -8,7 +8,7 @@
   "scripts": {
     "build": "stencil build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "script.sh",
+    "start": "stencil start",
     "start:dev": "stencil start --watch",
     "start:debug": "stencil start --debug --watch",
     "start:prod": "NODE_ENV=production node dist/main",

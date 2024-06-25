@@ -5,19 +5,22 @@
 Our [vision](./vision.md).
 
 ### Example
-See code example in the [server](./server/app.js) folder.
+See code example in the [server](./src/main.ts) folder.
 
 ### Setup Server
-
-Run `./setup.sh`. This script will install bun and download required files to setup server
+Run `./setup.sh`. This script will download all the necessary files 
 ```sh
-cd server
 ./setup.sh
+```
+
+Install Dependencies
+```sh
+npm i
 ```
 
 Start Server
 ```sh
-bun app.js
+npm run start
 ```
 
 ### Docker Container Setup and Usage Guide
@@ -36,18 +39,15 @@ Once Docker is installed, follow the steps below to set up and run the Docker co
     ```bash
     git clone https://github.com/ChakshuGautam/geoquery.in
     ```
-2. Change working dir to `server`
-    ```bash
-    cd geoquery.in/server
-    ```
-4. Build the Docker image using the provided Dockerfile with the following command:
+   
+2. Build the Docker image using the provided Dockerfile with the following command:
 
    ```bash
    docker build . -t geoquery
    ```
    > Note: After adding your user to the Docker group, you can run Docker commands without using `sudo`. If you haven't added your user to the Docker group, remember to use `sudo` before Docker commands.
 
-5. Run the Docker container using the following command:
+3. Run the Docker container using the following command:
 
    ```bash
    docker run -d geoquery
