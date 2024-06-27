@@ -47,9 +47,12 @@ describe('CityController', () => {
 
     it('should throw a bad request exception for an invalid IP', () => {
       const invalidIp = 'invalid-ip';
-      expect(() => controller.getCity(invalidIp)).toThrow(HttpException);
-      expect(() => controller.getCity(invalidIp)).toThrow(
-        'invalid-ip is invalid',
+      const result = controller.getCity(invalidIp);
+      expect(result).toEqual({
+        status: 'fail',
+        message: "ValueError",
+        query: "invalid-ip",
+      }
       );
     });
   });
