@@ -39,15 +39,14 @@ export class LocationController {
     @Param('locationlevel') locationLevel: string,
     @Query('query') query: string,
   ) {
+    if (!query) {
+      this.logger.error(`No ${locationLevel} query found`);
+      throw new HttpException(
+        `No ${locationLevel} query found`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     try {
-      if (!query) {
-        this.logger.error(`No ${locationLevel} query found`);
-        throw new HttpException(
-          `No ${locationLevel} query found`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
       const response = this.locationService.getCentroid(locationLevel, query);
       return formatCentroidResponse(
         response.properties,
@@ -58,7 +57,7 @@ export class LocationController {
       this.logger.error(
         `Error processing ${locationLevel} query: ${error.name}`,
       );
-      throw new HttpException(error.name, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(error.name, HttpStatus.NOT_FOUND);
     }
   }
 

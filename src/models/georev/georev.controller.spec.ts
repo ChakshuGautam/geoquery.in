@@ -4,6 +4,7 @@ import { GeorevController } from './georev.controller';
 import { GeorevService } from './georev.service';
 import { GeoqueryService } from '../../services/geoquery/geoquery.service';
 import { GeojsonService } from '../../services/geojson/geojson.service';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('GeorevController', () => {
   let controller: GeorevController;
@@ -75,24 +76,32 @@ describe('GeorevController', () => {
       const lat = 'invalid_lat'; // invalid latitude
       const lon = 'invalid_lon'; // invalid longitude
 
-      const result = await controller.getGeoRev(lat, lon);
-
-      expect(result).toEqual({
-        status: 'fail',
-        error: 'coordinates must contain numbers',
-      });
+      try {
+        await controller.getGeoRev(lat, lon);
+      } catch (error) {
+        expect(error).toBeInstanceOf(HttpException);
+        expect(error.getStatus()).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+        expect(error.getResponse()).toEqual({
+          status: 'fail',
+          error: 'coordinates must contain numbers',
+        });
+      }
     });
 
-    it('should handle case when no GeoLocation found for given coordinates', async () => {
+    it('should return error when no GeoLocation found for given coordinates', async () => {
       const lat = '1.2345'; // valid latitude
       const lon = '2.3456'; // valid longitude
 
-      const result = await controller.getGeoRev(lat, lon);
-
-      expect(result).toEqual({
-        status: 'fail',
-        error: 'No GeoLocation found for lat: 1.2345, lon: 2.3456',
-      });
+      try {
+        await controller.getGeoRev(lat, lon);
+      } catch (error) {
+        expect(error).toBeInstanceOf(HttpException);
+        expect(error.getStatus()).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+        expect(error.getResponse()).toEqual({
+          status: 'fail',
+          error: 'No GeoLocation found for lat: 1.2345, lon: 2.3456',
+        });
+      }
     });
   });
 });

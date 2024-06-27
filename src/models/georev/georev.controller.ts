@@ -1,4 +1,11 @@
-import { Controller, Get, Logger, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Logger,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { GeorevService } from './georev.service';
 import { formatGeorevSuccessResponse } from '../..//utils/serializer/success';
@@ -22,17 +29,29 @@ export class GeorevController {
 
       if (!resp) {
         this.logger.error(`No GeoLocation found for lat: ${lat}, lon: ${lon}`);
-        return {
-          status: 'fail',
-          error: `No GeoLocation found for lat: ${lat}, lon: ${lon}`,
-        };
+        throw new HttpException(
+          {
+            status: 'fail',
+            error: `No GeoLocation found for lat: ${lat}, lon: ${lon}`,
+          },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
 
       this.logger.log(`GeoRev Success Response: ${JSON.stringify(resp)}`);
       return formatGeorevSuccessResponse(resp);
     } catch (error) {
-      this.logger.error(`Error processing lat lon: ${error.name}`);
-      return { status: 'fail', error: error.message };
+      if (!(error instanceof HttpException)) {
+        this.logger.error(`Error processing lat lon: ${error.message}`);
+        throw new HttpException(
+          {
+            status: 'fail',
+            error: error.message,
+          },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      throw error;
     }
   }
 }
