@@ -1,8 +1,0 @@
-{
-  "requiredGeoLocationLevels": [
-    "SUBDISTRICT",
-    "DISTRICT",
-    "STATE"
-  ],
-  "country": "INDIA"
-}

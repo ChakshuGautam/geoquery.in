@@ -11,23 +11,18 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        node-version: [ 20.x ]
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
         with:
-          path: ./geoip # Set the path to your project root directory
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.0.23
-        
-      
-      - name: Install dependencies
-        run: ./setup.sh
-        working-directory: ./geoip/server # Set the working directory to your project root
-
-      - name: Run bun test
-        run: bun test
-        working-directory: ./geoip/server # Set the working directory to your project root
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+      - run: npm i
+      - run: ./setup.sh
+      - run: npm run test
+      - run: npm run test:e2e
