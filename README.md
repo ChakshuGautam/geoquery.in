@@ -8,14 +8,15 @@ Our [vision](./vision.md).
 See code example in the [server](./src/main.ts) folder.
 
 ### Setup Server
-Run `./setup.sh`. This script will download all the necessary files 
-```sh
-./setup.sh
-```
 
 Install Dependencies
 ```sh
 npm i
+```
+
+Run `./setup.sh`. This script will download all the necessary files
+```sh
+./setup.sh
 ```
 
 Start Server

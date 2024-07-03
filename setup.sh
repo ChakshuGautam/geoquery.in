@@ -1,16 +1,20 @@
-mkdir ./src/geojson-data &> /dev/null
+mkdir ./src/geojson-data
+
+# getting the latest db.mmdb
+curl -o ./db.mmdb -L --fail --compressed https://mmdbcdn.posthog.net
 
 cd ./src
 
-git clone --depth=1 "https://github.com/35C4n0r/geoquery.in.data" geojson-data
+#git clone --depth=1 "https://github.com/35C4n0r/geoquery.in.data" geojson-data
+#cp -r /d/Jay/C4GT/Selected/geoquery.in.data/* ./geojson-data
 cd geojson-data
 rm -rf .git .gitattributes
 
-mv ./geojson-data/* .
-rmdir ./geojson-data
+#mv ./geojson-data/* .
+#rmdir ./geojson-data
 
 # Moving db.mmdb to project root
-mv ./db.mmdb ../../db.mmdb
+#mv ./db.mmdb ../../db.mmdb
 
 curl -Lo INDIA_DISTRICT.geojson "https://github.com/datta07/INDIAN-SHAPEFILES/raw/master/INDIA/INDIA_DISTRICTS.geojson"
 curl -Lo INDIA_SUBDISTRICT.geojson "https://github.com/datta07/INDIAN-SHAPEFILES/raw/master/INDIA/INDIAN_SUB_DISTRICTS.geojson"
@@ -35,10 +39,10 @@ mv ./or ./odisha
 mv ./rj ./rajasthan
 mv ./sk ./sikkim
 
-# Changing PWD back to /server/
+# Changing PWD back to /src/
 cd ../..
 
-# Updating geoJSON files through script to make them usable in server
+# Updating geoJSON files through script to make them usable in src
 cd ./scripts
 npx ts-node parse.geojson.ts
 

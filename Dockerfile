@@ -65,6 +65,7 @@ RUN npm install
 COPY . .
 
 # Run any additional setup script
+RUN chmod +x ./setup.sh
 RUN ./setup.sh
 
 # Set environment variable
