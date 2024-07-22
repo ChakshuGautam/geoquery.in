@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { CityModule } from './models/city/city.module';
-import { GeorevModule } from './models/georev/georev.module';
-import { LocationModule } from './models/location/location.module';
+import { CityModule } from './modules/city/city.module';
+import { GeorevModule } from './modules/georev/georev.module';
+import { LocationModule } from './modules/location/location.module';
 import { ConfigModule } from '@nestjs/config';
 import { config } from './config/config';
 
@@ -18,7 +16,7 @@ import { config } from './config/config';
       isGlobal: true,
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
