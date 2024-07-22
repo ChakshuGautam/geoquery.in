@@ -4,6 +4,7 @@ import { GeorevModule } from './modules/georev/georev.module';
 import { LocationModule } from './modules/location/location.module';
 import { ConfigModule } from '@nestjs/config';
 import { config } from './config/config';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { config } from './config/config';
       isGlobal: true,
     }),
   ],
-  controllers: [],
-  providers: [],
+  controllers: [AppController],
+  providers: [AppModule],
 })
 export class AppModule {}
