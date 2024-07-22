@@ -5,6 +5,7 @@ import { LocationModule } from './modules/location/location.module';
 import { ConfigModule } from '@nestjs/config';
 import { config } from './config/config';
 import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { AppController } from './app.controller';
     }),
   ],
   controllers: [AppController],
-  providers: [AppModule],
+  providers: [AppService],
 })
 export class AppModule {}
