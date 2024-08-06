@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  postgis:
+    container_name: geopostgis
+    image: postgis/postgis:16-3.4-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=gis

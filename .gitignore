@@ -49,3 +49,6 @@ src/.DS_Store
 /src/geojson-data/
 /src/geoquery.in.data/
 db.mmdb
+
+
+.env
