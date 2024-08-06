@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// Command for migration: npx prisma migrate dev --name init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+
+  extensions = [postgis(), fuzzystrmatch()]
+}
+
+model State {
+  id       Int @id @default(autoincrement())
+  stcode11 Int @unique
+
+  stname            String                  @unique
+  levelLocationName String
+  stname_sh         String
+  shape_length      Float
+  shape_area        Float
+  state_lgd         Int
+  max_simp_tol      Int
+  metadata          Json?
+  min_simp_tol      Int
+  geometry          Unsupported("geometry")
+  District          District[]
+  SubDistrict       SubDistrict[]
+  Village           Village[]
+}
+
+model District {
+  id                Int                     @id @default(autoincrement())
+  dtcode11          Int                     @unique
+  dtname            String
+  levelLocationName String
+  year_stat         String
+  shape_length      Float
+  shape_area        Float
+  dist_lgd          Int
+  geometry          Unsupported("geometry")
+  metadata          Json?
+
+  stateId      Int?
+  state        State?        @relation(fields: [stateId], references: [stcode11])
+  subDistricts SubDistrict[]
+  Village      Village[]
+}
+
+model SubDistrict {
+  id                Int                     @id @default(autoincrement())
+  sdtcode11         Int                     @unique
+  sdtname           String
+  levelLocationName String
+  Shape_Length      Float
+  Shape_Area        Float
+  Subdt_LGD         Int
+  geometry          Unsupported("geometry")
+  metadata          Json?
+
+  districtId Int?
+  district   District? @relation(fields: [districtId], references: [dtcode11])
+
+  stateId Int?
+  state   State?    @relation(fields: [stateId], references: [stcode11])
+  Village Village[]
+}
+
+model Village {
+  id     Int @id @default(autoincrement())
+  vgcode Int @default(autoincrement())
+
+  geometry Unsupported("geometry")
+  vgname   String
+  metadata Json?
+
+  subDistrictId Int?
+  subDistrict   SubDistrict? @relation(fields: [subDistrictId], references: [sdtcode11])
+
+  districtId Int?
+  district   District? @relation(fields: [districtId], references: [dtcode11])
+
+  stateId Int?
+  state   State? @relation(fields: [stateId], references: [stcode11])
+}
