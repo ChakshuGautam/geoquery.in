@@ -13,7 +13,7 @@ import { AppService } from './app.service';
     GeorevModule,
     LocationModule,
     ConfigModule.forRoot({
-      envFilePath: `${process.cwd()}/config/env/${process.env.NODE_ENV || 'default'}.env`,
+      envFilePath: `.env`,
       load: [config],
       isGlobal: true,
     }),
