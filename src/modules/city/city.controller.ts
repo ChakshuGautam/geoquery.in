@@ -22,7 +22,8 @@ export class CityController {
   private readonly logger = new Logger(CityController.name);
 
   @Get('self')
-  getGeoFromRequestIp(@Ip() ip: string) {
+  getGeoFromRequestIp(@Req() req) {
+    const ip = req.headers['x-forwarded-for'] || req.ip;
     try {
       const city = this.cityService.getCity(ip);
       return formatSuccessResponse(city);
