@@ -7,7 +7,7 @@ import {
   Logger,
   Param,
   Post,
-  HttpCode,
+  HttpCode, Req, Ip,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -20,6 +20,16 @@ import { formatErrorResponse } from '../../utils/serializer/error';
 export class CityController {
   constructor(private readonly cityService: CityService) {}
   private readonly logger = new Logger(CityController.name);
+
+  @Get('self')
+  getGeoFromRequestIp(@Ip() ip: string) {
+    try {
+      const city = this.cityService.getCity(ip);
+      return formatSuccessResponse(city);
+    } catch (error) {
+      return formatErrorResponse(error, ip);
+    }
+  }
 
   @Get(':ip')
   getCity(@Param('ip') ip: string) {
