@@ -14,6 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { CityService } from './city.service';
 import { formatSuccessResponse } from '../../utils/serializer/success';
 import { formatErrorResponse } from '../../utils/serializer/error';
+import * as RequestIp from 'request-ip'
 
 @ApiTags('/city')
 @Controller('city')
@@ -23,7 +24,7 @@ export class CityController {
 
   @Get('self')
   getGeoFromRequestIp(@Req() req) {
-    const ip = req.headers['x-forwarded-for'] || req.ip;
+    const ip = RequestIp.getClientIp(req)
     try {
       const city = this.cityService.getCity(ip);
       return formatSuccessResponse(city);
