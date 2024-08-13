@@ -1,6 +1,8 @@
 export const config = () => ({
   NODE_ENV: process.env.NODE_ENV || 'default',
   port: parseInt(process.env.PORT) || 3000,
+  host: parseInt(process.env.HOST) || '0.0.0.0',
+  method: parseInt(process.env.METHOD) || 'http',
   requiredGeoLocationLevels: ['SUBDISTRICT', 'DISTRICT', 'STATE'],
   geoLocationLevels: {
     VILLAGE: 'VILLAGE',

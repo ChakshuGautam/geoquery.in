@@ -64,15 +64,16 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+# Convert setup.sh to Unix-style line endings (LF)
+RUN sed -i 's/\r$//' ./setup.sh
+
+
 # Run any additional setup script
 RUN chmod +x ./setup.sh
 RUN ./setup.sh
 
 # Set environment variable
 ENV NODE_ENV production
-
-# Expose the application port
-EXPOSE 3000
 
 # Start the application
 CMD ["npm", "run", "start:dev"]
