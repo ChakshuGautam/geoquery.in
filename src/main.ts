@@ -23,6 +23,8 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('port');
+  const host = configService.get<string>('host');
+  const method = configService.get<string>('method');
 
   // Register plugins and middleware
   await app.register(multipart);
@@ -43,8 +45,8 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   // Start the server
-  await app.listen(port, () => {
-    logger.log(`Server running on http://localhost:${port}`);
+  await app.listen(port, host, (err, address) => {
+    logger.log(`Server running on ${method}://${host}:${port}`);
   });
 
   // Log additional information as needed
