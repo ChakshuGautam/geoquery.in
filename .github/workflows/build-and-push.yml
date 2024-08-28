@@ -19,7 +19,7 @@ jobs:
         shell: pwsh
         run: |
           "::set-output name=repository::$($env:DOCKER_IMAGE_NAME.ToLowerInvariant())"
-          
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -38,7 +38,7 @@ jobs:
         with:
           build-args: |
             "SERVER_RELEASE_VERSION=${{ github.sha }}"
-          context: "server/."
+          context: "."
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
