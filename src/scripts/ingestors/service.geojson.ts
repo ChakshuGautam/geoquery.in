@@ -4,25 +4,21 @@ const prisma = new PrismaClient();
 
 export async function executeStateCreateQuery(properties, geoJsonData) {
   const query = `
-      INSERT INTO "State" ("stcode11",
-                           "stname",
-                           "levelLocationName",
-                           "stname_sh",
-                           "shape_length",
-                           "shape_area",
-                           "state_lgd",
-                           "max_simp_tol",
-                           "min_simp_tol",
+      INSERT INTO "State" ("state_code",
+                           "state_name",
+                           "metadata",
                            "geometry")
       VALUES ('${properties.STCODE11}',
               '${properties.STNAME}',
-              '${properties.levelLocationName}',
-              '${properties.STNAME_SH}',
-              ${properties.Shape_Length},
-              ${properties.Shape_Area},
-              ${properties.State_LGD},
-              ${properties.MaxSimpTol},
-              ${properties.MinSimpTol},
+              jsonb_build_object(
+                'levelLocationName', '${properties.levelLocationName}',
+                'stname_sh', '${properties.STNAME_SH}',
+                'shape_length', ${properties.Shape_Length},
+                'shape_area', ${properties.Shape_Area},
+                'state_lgd', ${properties.State_LGD},
+                'max_simp_tol', ${properties.MaxSimpTol},
+                'min_simp_tol', ${properties.MinSimpTol}
+              ),
               ST_SetSRID(ST_GeomFromGeoJSON('${geoJsonData}'), 4326));
   `;
 
@@ -30,112 +26,86 @@ export async function executeStateCreateQuery(properties, geoJsonData) {
 }
 
 
-export async function findState(stname) {
+export async function findState(state_name) {
   return prisma.$queryRawUnsafe(`
-      WITH input AS (SELECT '${stname}'::VARCHAR AS input_name)
-      SELECT st.stname, st.stcode11, levenshtein(i.input_name, st.stname) as levenshtein
+      WITH input AS (SELECT '${state_name}'::VARCHAR AS input_name)
+      SELECT st.state_name, st.state_code, levenshtein(i.input_name, st.state_name) as levenshtein
       FROM "State" st,
            input i
-      WHERE levenshtein(i.input_name, st.stname) <= 5
+      WHERE levenshtein(i.input_name, st.state_name) <= 5
       ORDER BY levenshtein LIMIT 1;
   `);
-  // return prisma.state.findUnique({
-  //   where: {
-  //     // stcode11_stname: {
-  //     //   stcode11: stcode11,
-  //       stname: stname,
-  //     // },
-  //   },
-  // });
 }
 
 
 export async function executeDistrictCreateQuery(properties, geoJsonData, state) {
   const query = `
-      INSERT INTO "District" ("dtcode11",
-                              "dtname",
-                              "levelLocationName",
-                              "year_stat",
-                              "shape_length",
-                              "shape_area",
-                              "dist_lgd",
+      INSERT INTO "District" ("district_code",
+                              "district_name",
+                              "metadata",
                               "geometry",
                               "stateId")
       VALUES ('${properties.dtcode11}',
               '${properties.dtname}',
-              '${properties.levelLocationName}',
-              '${properties.year_stat}',
-              ${properties.SHAPE_Length},
-              ${properties.SHAPE_Area},
-              ${properties.Dist_LGD},
+              jsonb_build_object(
+                'levelLocationName', '${properties.levelLocationName}',
+                'year_stat', '${properties.year_stat}',
+                'shape_length', ${properties.SHAPE_Length},
+                'shape_area', ${properties.SHAPE_Area},
+                'dist_lgd', ${properties.Dist_LGD}
+              ),
               ST_SetSRID(ST_GeomFromGeoJSON('${geoJsonData}'), 4326),
-              ${state.stcode11});
+              ${state.state_code});
   `;
-
-  // console.log(query);
-
-  // try {
   await prisma.$executeRawUnsafe(query);
-  // console.log(`Ingested: ${properties.dtname}`);
-  // } catch (error) {
-  //   console.error(`Error inserting ${properties.dtname}:`, error);
-  // }
 }
 
 
-export async function findDistrict(dtname) {
+export async function findDistrict(district_name) {
   return prisma.$queryRawUnsafe(`
-      WITH input AS (SELECT '${dtname}'::VARCHAR AS input_name)
-      SELECT dt.dtname, dt.dtcode11, levenshtein(i.input_name, dt.dtname) as levenshtein
+      WITH input AS (SELECT '${district_name}'::VARCHAR AS input_name)
+      SELECT dt.district_name, dt.district_code, levenshtein(i.input_name, dt.district_name) as levenshtein
       FROM "District" dt,
            input i
-      WHERE levenshtein(i.input_name, dt.dtname) <= 5
-       OR i.input_name ILIKE '%' || dt.dtname || '%'
-       OR dt.dtname ILIKE '%' || i.input_name || '%'
+      WHERE levenshtein(i.input_name, dt.district_name) <= 5
+       OR i.input_name ILIKE '%' || dt.district_name || '%'
+       OR dt.district_name ILIKE '%' || i.input_name || '%'
       ORDER BY levenshtein LIMIT 1;
   `);
-  // return prisma.district.findUnique({
-  //   where: {
-  //     // stcode11_stname: {
-  //     //   stcode11: stcode11,
-  //     dtname: dtname,
-  //     // },
-  //   },
-  // });
 }
 
 
 export async function executeSubDistrictCreateQuery(properties, geoJsonData, state, district) {
   const query = `
-      INSERT INTO "SubDistrict" ("sdtcode11",
-                                 "sdtname",
-                                 "levelLocationName",
-                                 "Shape_Length",
-                                 "Shape_Area",
-                                 "Subdt_LGD",
+      INSERT INTO "SubDistrict" ("subdistrict_code",
+                                 "subdistrict_name",
+                                 "metadata",
                                  "geometry",
                                  "stateId",
                                  "districtId")
       VALUES ('${properties.sdtcode11}',
               '${properties.sdtname}',
-              '${properties.levelLocationName}',
-              ${properties.Shape_Length},
-              ${properties.Shape_Area},
-              ${properties.Subdt_LGD},
+              jsonb_build_object(
+                'levelLocationName', '${properties.levelLocationName}',
+                'Shape_Length', ${properties.Shape_Length},
+                'Shape_Area', ${properties.Shape_Area},
+                'Subdt_LGD', ${properties.Subdt_LGD}
+              ),
               ST_SetSRID(ST_GeomFromGeoJSON('${geoJsonData}'), 4326),
-              ${state.stcode11},
-              ${district.dtcode11});
+              ${state.state_code},
+              ${district.district_code});
   `;
   await prisma.$executeRawUnsafe(query);
 }
 
-export async function findSubDistrict(dtname) {
+
+export async function findSubDistrict(subdistrict_name) {
   return prisma.$queryRawUnsafe(`
-      WITH input AS (SELECT '${dtname}'::VARCHAR AS input_name)
-      SELECT dt.sdtname, dt.sdtcode11, levenshtein(i.input_name, dt.sdtname) as levenshtein
+      WITH input AS (SELECT '${subdistrict_name}'::VARCHAR AS input_name)
+      SELECT dt.subdistrict_name, dt.subdistrict_code, levenshtein(i.input_name, dt.subdistrict_name) as levenshtein
       FROM "SubDistrict" dt,
            input i
-      WHERE levenshtein(i.input_name, dt.sdtname) <= 5
+      WHERE levenshtein(i.input_name, dt.subdistrict_name) <= 5
       ORDER BY levenshtein LIMIT 1;
   `);
 }
@@ -144,18 +114,19 @@ export async function findSubDistrict(dtname) {
 export async function executeVillageCreateQuery(properties, geoJsonData, state, district, subDistrict) {
   const query = `
       INSERT INTO "Village" (
-                             "vgname",
+                             "village_name",
+                             "metadata",
                              "geometry",
                              "stateId",
                              "districtId",
                              "subDistrictId")
       VALUES (
               '${properties.NAME}',
+              jsonb_build_object(),
               ST_SetSRID(ST_GeomFromGeoJSON('${geoJsonData}'), 4326),
-              ${state.stcode11},
-              ${district.dtcode11},
-              ${subDistrict.sdtcode11});
+              ${state.state_code},
+              ${district.district_code},
+              ${subDistrict.subdistrict_code});
   `;
-  // console.log(query);
   await prisma.$executeRawUnsafe(query);
 }

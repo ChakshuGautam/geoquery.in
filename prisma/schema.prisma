@@ -19,75 +19,58 @@ datasource db {
 }
 
 model State {
-  id       Int @id @default(autoincrement())
-  stcode11 Int @unique
-
-  stname            String                  @unique
-  levelLocationName String
-  stname_sh         String
-  shape_length      Float
-  shape_area        Float
-  state_lgd         Int
-  max_simp_tol      Int
-  metadata          Json?
-  min_simp_tol      Int
-  geometry          Unsupported("geometry")
-  District          District[]
-  SubDistrict       SubDistrict[]
-  Village           Village[]
+  id          Int                     @id @default(autoincrement())
+  state_code  Int                     @unique
+  state_name  String                  @unique
+  metadata    Json?
+  geometry    Unsupported("geometry")
+  District    District[]
+  SubDistrict SubDistrict[]
+  Village     Village[]
 }
 
 model District {
-  id                Int                     @id @default(autoincrement())
-  dtcode11          Int                     @unique
-  dtname            String
-  levelLocationName String
-  year_stat         String
-  shape_length      Float
-  shape_area        Float
-  dist_lgd          Int
-  geometry          Unsupported("geometry")
-  metadata          Json?
+  id            Int                     @id @default(autoincrement())
+  district_code Int                     @unique
+  district_name String
+  geometry      Unsupported("geometry")
+  metadata      Json?
 
   stateId      Int?
-  state        State?        @relation(fields: [stateId], references: [stcode11])
+  state        State?        @relation(fields: [stateId], references: [state_code])
   subDistricts SubDistrict[]
   Village      Village[]
 }
 
 model SubDistrict {
-  id                Int                     @id @default(autoincrement())
-  sdtcode11         Int                     @unique
-  sdtname           String
-  levelLocationName String
-  Shape_Length      Float
-  Shape_Area        Float
-  Subdt_LGD         Int
-  geometry          Unsupported("geometry")
-  metadata          Json?
+  id               Int                     @id @default(autoincrement())
+  subdistrict_code Int                     @unique
+  subdistrict_name String
+  geometry         Unsupported("geometry")
+  metadata         Json?
 
   districtId Int?
-  district   District? @relation(fields: [districtId], references: [dtcode11])
+  district   District? @relation(fields: [districtId], references: [district_code])
 
   stateId Int?
-  state   State?    @relation(fields: [stateId], references: [stcode11])
+  state   State?    @relation(fields: [stateId], references: [state_code])
   Village Village[]
 }
 
 model Village {
-  id     Int @id @default(autoincrement())
-  vgcode Int @default(autoincrement())
+  id           Int @id @default(autoincrement())
+  village_code Int @default(autoincrement())
 
-  geometry Unsupported("geometry")
-  vgname   String
-  metadata Json?
+  geometry     Unsupported("geometry")
+  village_name String
+  metadata     Json?
 
   subDistrictId Int?
-  subDistrict   SubDistrict? @relation(fields: [subDistrictId], references: [sdtcode11])
+  subDistrict   SubDistrict? @relation(fields: [subDistrictId], references: [subdistrict_code])
 
   districtId Int?
-  district   District? @relation(fields: [districtId], references: [dtcode11])
+  district   District? @relation(fields: [districtId], references: [district_code])
 
   stateId Int?
-  state   State? @relation(fields: [stateId], references: [stcode11])
+  state   State? @relation(fields: [stateId], references: [state_code])
 }
