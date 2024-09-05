@@ -22,7 +22,7 @@ CREATE TABLE "District" (
     "district_name" TEXT NOT NULL,
     "geometry" geometry NOT NULL,
     "metadata" JSONB,
-    "stateId" INTEGER,
+    "state_id" INTEGER,
 
     CONSTRAINT "District_pkey" PRIMARY KEY ("id")
 );
@@ -34,8 +34,8 @@ CREATE TABLE "SubDistrict" (
     "subdistrict_name" TEXT NOT NULL,
     "geometry" geometry NOT NULL,
     "metadata" JSONB,
-    "districtId" INTEGER,
-    "stateId" INTEGER,
+    "district_id" INTEGER,
+    "state_id" INTEGER,
 
     CONSTRAINT "SubDistrict_pkey" PRIMARY KEY ("id")
 );
@@ -47,9 +47,9 @@ CREATE TABLE "Village" (
     "geometry" geometry NOT NULL,
     "village_name" TEXT NOT NULL,
     "metadata" JSONB,
-    "subDistrictId" INTEGER,
-    "districtId" INTEGER,
-    "stateId" INTEGER,
+    "subdistrict_id" INTEGER,
+    "district_id" INTEGER,
+    "state_id" INTEGER,
 
     CONSTRAINT "Village_pkey" PRIMARY KEY ("id")
 );
@@ -67,19 +67,19 @@ CREATE UNIQUE INDEX "District_district_code_key" ON "District"("district_code");
 CREATE UNIQUE INDEX "SubDistrict_subdistrict_code_key" ON "SubDistrict"("subdistrict_code");
 
 -- AddForeignKey
-ALTER TABLE "District" ADD CONSTRAINT "District_stateId_fkey" FOREIGN KEY ("stateId") REFERENCES "State"("state_code") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "District" ADD CONSTRAINT "District_state_id_fkey" FOREIGN KEY ("state_id") REFERENCES "State"("state_code") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SubDistrict" ADD CONSTRAINT "SubDistrict_districtId_fkey" FOREIGN KEY ("districtId") REFERENCES "District"("district_code") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "SubDistrict" ADD CONSTRAINT "SubDistrict_district_id_fkey" FOREIGN KEY ("district_id") REFERENCES "District"("district_code") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SubDistrict" ADD CONSTRAINT "SubDistrict_stateId_fkey" FOREIGN KEY ("stateId") REFERENCES "State"("state_code") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "SubDistrict" ADD CONSTRAINT "SubDistrict_state_id_fkey" FOREIGN KEY ("state_id") REFERENCES "State"("state_code") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Village" ADD CONSTRAINT "Village_subDistrictId_fkey" FOREIGN KEY ("subDistrictId") REFERENCES "SubDistrict"("subdistrict_code") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Village" ADD CONSTRAINT "Village_subdistrict_id_fkey" FOREIGN KEY ("subdistrict_id") REFERENCES "SubDistrict"("subdistrict_code") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Village" ADD CONSTRAINT "Village_districtId_fkey" FOREIGN KEY ("districtId") REFERENCES "District"("district_code") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Village" ADD CONSTRAINT "Village_district_id_fkey" FOREIGN KEY ("district_id") REFERENCES "District"("district_code") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Village" ADD CONSTRAINT "Village_stateId_fkey" FOREIGN KEY ("stateId") REFERENCES "State"("state_code") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Village" ADD CONSTRAINT "Village_state_id_fkey" FOREIGN KEY ("state_id") REFERENCES "State"("state_code") ON DELETE SET NULL ON UPDATE CASCADE;

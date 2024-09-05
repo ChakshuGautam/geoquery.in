@@ -44,7 +44,7 @@ export async function executeDistrictCreateQuery(properties, geoJsonData, state)
                               "district_name",
                               "metadata",
                               "geometry",
-                              "stateId")
+                              "state_id")
       VALUES ('${properties.dtcode11}',
               '${properties.dtname}',
               jsonb_build_object(
@@ -81,8 +81,8 @@ export async function executeSubDistrictCreateQuery(properties, geoJsonData, sta
                                  "subdistrict_name",
                                  "metadata",
                                  "geometry",
-                                 "stateId",
-                                 "districtId")
+                                 "state_id",
+                                 "district_id")
       VALUES ('${properties.sdtcode11}',
               '${properties.sdtname}',
               jsonb_build_object(
@@ -117,9 +117,9 @@ export async function executeVillageCreateQuery(properties, geoJsonData, state, 
                              "village_name",
                              "metadata",
                              "geometry",
-                             "stateId",
-                             "districtId",
-                             "subDistrictId")
+                             "state_id",
+                             "district_id",
+                             "subdistrict_id")
       VALUES (
               '${properties.NAME}',
               jsonb_build_object(),

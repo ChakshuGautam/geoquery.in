@@ -19,14 +19,14 @@ datasource db {
 }
 
 model State {
-  id          Int                     @id @default(autoincrement())
-  state_code  Int                     @unique
-  state_name  String                  @unique
-  metadata    Json?
-  geometry    Unsupported("geometry")
-  District    District[]
-  SubDistrict SubDistrict[]
-  Village     Village[]
+  id           Int                     @id @default(autoincrement())
+  state_code   Int                     @unique
+  state_name   String                  @unique
+  metadata     Json?
+  geometry     Unsupported("geometry")
+  district     District[]
+  Sub_district SubDistrict[]
+  village      Village[]
 }
 
 model District {
@@ -36,10 +36,10 @@ model District {
   geometry      Unsupported("geometry")
   metadata      Json?
 
-  stateId      Int?
-  state        State?        @relation(fields: [stateId], references: [state_code])
-  subDistricts SubDistrict[]
-  Village      Village[]
+  state_id      Int?
+  state         State?        @relation(fields: [state_id], references: [state_code])
+  sub_districts SubDistrict[]
+  village       Village[]
 }
 
 model SubDistrict {
@@ -49,12 +49,12 @@ model SubDistrict {
   geometry         Unsupported("geometry")
   metadata         Json?
 
-  districtId Int?
-  district   District? @relation(fields: [districtId], references: [district_code])
+  district_id Int?
+  district    District? @relation(fields: [district_id], references: [district_code])
 
-  stateId Int?
-  state   State?    @relation(fields: [stateId], references: [state_code])
-  Village Village[]
+  state_id Int?
+  state    State?    @relation(fields: [state_id], references: [state_code])
+  village  Village[]
 }
 
 model Village {
@@ -65,12 +65,12 @@ model Village {
   village_name String
   metadata     Json?
 
-  subDistrictId Int?
-  subDistrict   SubDistrict? @relation(fields: [subDistrictId], references: [subdistrict_code])
+  subdistrict_id Int?
+  subdistrict    SubDistrict? @relation(fields: [subdistrict_id], references: [subdistrict_code])
 
-  districtId Int?
-  district   District? @relation(fields: [districtId], references: [district_code])
+  district_id Int?
+  district    District? @relation(fields: [district_id], references: [district_code])
 
-  stateId Int?
-  state   State? @relation(fields: [stateId], references: [state_code])
+  state_id Int?
+  state    State? @relation(fields: [state_id], references: [state_code])
 }
