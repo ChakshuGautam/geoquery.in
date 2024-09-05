@@ -19,14 +19,14 @@ datasource db {
 }
 
 model State {
-  id           Int                     @id @default(autoincrement())
-  state_code   Int                     @unique
-  state_name   String                  @unique
-  metadata     Json?
-  geometry     Unsupported("geometry")
-  district     District[]
-  Sub_district SubDistrict[]
-  village      Village[]
+  id          Int                     @id @default(autoincrement())
+  state_code  Int                     @unique
+  state_name  String                  @unique
+  metadata    Json?
+  geometry    Unsupported("geometry")
+  district    District[]
+  subdistrict SubDistrict[]
+  village     Village[]
 }
 
 model District {
@@ -36,10 +36,10 @@ model District {
   geometry      Unsupported("geometry")
   metadata      Json?
 
-  state_id      Int?
-  state         State?        @relation(fields: [state_id], references: [state_code])
-  sub_districts SubDistrict[]
-  village       Village[]
+  state_id    Int?
+  state       State?        @relation(fields: [state_id], references: [state_code])
+  subdistrict SubDistrict[]
+  village     Village[]
 }
 
 model SubDistrict {
