@@ -1,34 +1,23 @@
 export const config = () => ({
   NODE_ENV: process.env.NODE_ENV || 'default',
   port: parseInt(process.env.PORT) || 3000,
-  requiredGeoLocationLevels: ['SUBDISTRICT', 'DISTRICT', 'STATE'],
-  geoLocationLevels: {
-    VILLAGE: 'VILLAGE',
-    SUBDISTRICT: 'SUBDISTRICT',
-    DISTRICT: 'DISTRICT',
-    STATE: 'STATE',
-  },
-  levelsMapping: {
-    STATE: {
-      name: 'state',
-      path: 'state',
-      depth: 0,
+  tableLevels: [],
+  tableMeta: {
+    "STATE": {
+      tname: "State",
+      fname: "state_name"
     },
-    DISTRICT: {
-      name: 'district',
-      path: 'state->district',
-      depth: 1,
+    "DISTRICT": {
+      tname: "District",
+      fname: "district_name",
     },
-    SUBDISTRICT: {
-      name: 'subDistrict',
-      path: 'state->district->subDistrict',
-      depth: 2,
+    "SUBDISTRICT": {
+      tname: "SubDistrict",
+      fname: "subdistrict_name",
     },
-    VILLAGE: {
-      name: 'village',
-      path: 'state->district->subDistrict->village',
-      depth: 3,
-    },
-  },
-  country: 'INDIA',
+    "VILLAGE": {
+      tname: "Village",
+      fname: "village_name",
+    }
+  }
 });

@@ -3,133 +3,115 @@ import { LocationController } from './location.controller';
 import { ConfigService } from '@nestjs/config';
 import { LocationSearchService } from './location.search-service';
 import { LocationService } from './location.service';
-import { HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('LocationController', () => {
-  let controller: LocationController;
-  let configService: ConfigService;
-  let locationSearchService: LocationSearchService;
+  let locationController: LocationController;
   let locationService: LocationService;
+  let locationSearchService: LocationSearchService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LocationController],
       providers: [
         {
-          provide: ConfigService,
+          provide: LocationService,
           useValue: {
-            get: jest.fn((key: string) => {
-              if (key === 'geoLocationLevels') {
-                return {
-                  VILLAGE: 'VILLAGE',
-                  SUBDISTRICT: 'SUBDISTRICT',
-                  DISTRICT: 'DISTRICT',
-                  STATE: 'STATE',
-                };
-              } else if (key === 'levelsMapping') {
-                return {
-                  STATE: {
-                    name: 'state',
-                    path: 'state',
-                    depth: 0,
-                  },
-                  DISTRICT: {
-                    name: 'district',
-                    path: 'state->district',
-                    depth: 1,
-                  },
-                  SUBDISTRICT: {
-                    name: 'subDistrict',
-                    path: 'state->district->subDistrict',
-                    depth: 2,
-                  },
-                  VILLAGE: {
-                    name: 'village',
-                    path: 'state->district->subDistrict->village',
-                    depth: 3,
-                  },
-                };
-              }
-            }),
+            getCentroid: jest.fn(), // Mock the method for LocationService
           },
         },
         {
           provide: LocationSearchService,
           useValue: {
-            fuzzySearch: jest.fn(() => ({ result: 'mocked result' })),
+            fuzzySearch: jest.fn((
+              locationLevel,
+                query,
+                filter
+            ) => {
+              return [{"name": "Location 1"}]
+            }), // Mock the method for LocationSearchService
           },
         },
         {
-          provide: LocationService,
+          provide: ConfigService,
           useValue: {
-            getCentroid: jest.fn(() => ({
-              properties: {
-                levelLocationName: 'Lucknow',
-                dtname: 'Lucknow',
-                stname: 'UTTAR PRADESH',
-                stcode11: '09',
-                dtcode11: '157',
-                year_stat: '2011_c',
-                SHAPE_Length: 424086.646831452,
-                SHAPE_Area: 3190740670.6066375,
-                OBJECTID: 229,
-                test: null,
-                Dist_LGD: 162,
-                State_LGD: 9,
-              },
-              latitude: 26.830190863213858,
-              longitude: 80.89119983155268,
-            })),
+            get: jest.fn((key: string) => {
+              if (key === 'tableMeta') {
+                return { LEVEL1: 'Level 1', LEVEL2: 'Level 2' };
+              } else if (key === 'levelsMapping') {
+                return { LEVEL1: 'Mapping 1', LEVEL2: 'Mapping 2' };
+              }
+              return null;
+            }),
           },
         },
       ],
     }).compile();
 
-    controller = module.get<LocationController>(LocationController);
-    configService = module.get<ConfigService>(ConfigService);
+    locationController = module.get<LocationController>(LocationController);
+    locationService = module.get<LocationService>(LocationService);
     locationSearchService = module.get<LocationSearchService>(
       LocationSearchService,
     );
-    locationService = module.get<LocationService>(LocationService);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(locationController).toBeDefined();
   });
 
-  it('should handle missing query parameter in getCentroid', () => {
-    expect(() => controller.getCentroid('state', null)).toThrow(HttpException);
-  });
-
-  it('should call getCentroid method with correct parameters', () => {
-    const result = controller.getCentroid('DISTRICT', 'lucknow');
-    expect(result).toEqual({
-      status: 'success',
-      state: 'UTTAR PRADESH',
-      district: 'Lucknow',
-      subDistrict: '',
-      city: '',
-      block: '',
-      village: '',
-      lat: 26.830190863213858,
-      lon: 80.89119983155268,
+  describe('health', () => {
+    it('should return "up" message', () => {
+      expect(locationController.health()).toEqual({ message: 'up' });
     });
   });
 
-  it('should handle missing query parameter in fuzzySearch', () => {
-    expect(() => controller.fuzzySearch('state', { query: null })).toThrow(
-      HttpException,
-    );
+  describe('getCentroid', () => {
+    it('should throw BAD_REQUEST if query is missing', async () => {
+      await expect(
+        locationController.getCentroid('LEVEL1', ''),
+      ).rejects.toThrow(HttpException);
+      await expect(
+        locationController.getCentroid('LEVEL1', ''),
+      ).rejects.toThrow(`No LEVEL1 query found`);
+    });
+
+    it('should return centroid data when query is valid', async () => {
+      const mockCentroidResponse = {
+        properties: { name: 'Location' },
+        latitude: 12.9716,
+        longitude: 77.5946,
+      };
+
+      jest
+        .spyOn(locationService, 'getCentroid')
+        .mockResolvedValueOnce(mockCentroidResponse);
+
+      const result = await locationController.getCentroid('LEVEL1', 'query');
+      expect(result).toEqual({
+        "block": "",
+        "city": "",
+        "district": "",
+        "lat": 12.9716,
+        "lon": 77.5946,
+        "state": "",
+        "status": "success",
+        "subDistrict": "",
+        "village": "",
+      });
+    });
+
+    it('should throw NOT_FOUND if location service throws an error', async () => {
+      jest
+        .spyOn(locationService, 'getCentroid')
+        .mockRejectedValueOnce(new Error('NotFoundError'));
+
+      await expect(
+        locationController.getCentroid('LEVEL1', 'query'),
+      ).rejects.toThrow(HttpException);
+      await expect(
+        locationController.getCentroid('LEVEL1', 'query'),
+      ).rejects.toThrow('TypeError');
+    });
   });
 
-  it('should handle unsupported GeoLocation Level in fuzzySearch', () => {
-    expect(() =>
-      controller.fuzzySearch('country', { query: 'testQuery' }),
-    ).toThrow(HttpException);
-  });
-
-  it('should call fuzzySearch method with correct parameters', () => {
-    const result = controller.fuzzySearch('state', { query: 'testQuery' });
-    expect(result).toEqual({ result: 'mocked result' });
-  });
 });

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { GeojsonService } from '../../services/geojson/geojson.service';
 import { GeoqueryService } from '../../services/geoquery/geoquery.service';
 
 @Injectable()
@@ -9,24 +8,26 @@ export class GeorevService {
 
   constructor(
     private readonly geoQueryService: GeoqueryService,
-    private readonly geoJsonService: GeojsonService,
     private readonly configService: ConfigService,
   ) {
-    this.geoJsonFiles = geoJsonService.getGeoJsonFiles();
   }
 
-  getGeoRev(lat: string, lon: string) {
+  async getGeoRev(lat: string, lon: string) {
     try {
-      // Searching for SUBDISTRICT GeoLocation Level
-      const response = this.geoQueryService.individualQuery(
-        this.configService.get<string>('country'),
-        this.configService.get<string>('geoLocationLevels.SUBDISTRICT'),
-        [parseFloat(lon), parseFloat(lat)],
-        this.geoJsonFiles,
-      );
-      return response;
+      return await this.geoQueryService.querySubDistrictContains(parseFloat(lat), parseFloat(lon));
     } catch (error) {
       throw error;
     }
+  }
+
+
+  isValidLatitudeLongitude(lat: string, lon: string) {
+    const parsedLat = parseFloat(lat);
+    const parsedLon = parseFloat(lon);
+
+    const isValidLat = !isNaN(parsedLat) && parsedLat >= -90 && parsedLat <= 90;
+    const isValidLon = !isNaN(parsedLon) && parsedLon >= -180 && parsedLon <= 180;
+
+    return isValidLat && isValidLon;
   }
 }

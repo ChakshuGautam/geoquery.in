@@ -1,19 +1,10 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Query,
-  HttpException,
-  HttpStatus,
-  Logger,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, Post, Query } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 import { formatCentroidResponse } from '../../utils/serializer/success';
 import { LocationSearchService } from './location.search-service';
 import { LocationService } from './location.service';
+
 @ApiTags('/location')
 @Controller('location')
 export class LocationController {
@@ -27,15 +18,20 @@ export class LocationController {
     private readonly locationService: LocationService,
   ) {
     this.geoLocationLevels = this.configService.get<{ [key: string]: any }>(
-      'geoLocationLevels',
+      'tableMeta',
     );
     this.levelsMapping = this.configService.get<{ [key: string]: any }>(
       'levelsMapping',
     );
   }
 
+  @Get()
+  health() {
+    return {"message": "up"}
+  }
+
   @Get(':locationlevel/centroid')
-  getCentroid(
+  async getCentroid(
     @Param('locationlevel') locationLevel: string,
     @Query('query') query: string,
   ) {
@@ -47,7 +43,8 @@ export class LocationController {
       );
     }
     try {
-      const response = this.locationService.getCentroid(locationLevel, query);
+      const response = await this.locationService.getCentroid(locationLevel, query);
+      this.logger.log(response);
       return formatCentroidResponse(
         response.properties,
         response.latitude,
@@ -62,9 +59,9 @@ export class LocationController {
   }
 
   @Post(':locationlevel/fuzzysearch')
-  fuzzySearch(
+  async fuzzySearch(
     @Param('locationlevel') locationLevel: string,
-    @Body() body: any,
+    @Body() body: any, //
   ) {
     try {
       if (
@@ -87,50 +84,14 @@ export class LocationController {
       }
 
       const filter = body.filter || {};
-      const filterArray = [];
-      for (const filterKey of Object.keys(filter)) {
-        if (
-          !Object.keys(this.geoLocationLevels).includes(filterKey.toUpperCase())
-        ) {
-          throw new HttpException(
-            `Unsupported GeoLocation Level Filter: ${filterKey}`,
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-        filterArray.push({
-          level: this.levelsMapping[filterKey.toUpperCase()],
-          query: filter[filterKey],
-        });
-      }
 
-      let searchLevel;
-      switch (locationLevel.toUpperCase()) {
-        case 'STATE':
-          searchLevel = this.levelsMapping.STATE;
-          break;
-        case 'DISTRICT':
-          searchLevel = this.levelsMapping.DISTRICT;
-          break;
-        case 'SUBDISTRICT':
-          searchLevel = this.levelsMapping.SUBDISTRICT;
-          break;
-        case 'VILLAGE':
-          searchLevel = this.levelsMapping.VILLAGE;
-          break;
-        default:
-          throw new HttpException(
-            'Invalid location level',
-            HttpStatus.INTERNAL_SERVER_ERROR,
-          );
-      }
-
-      const queryResponse = this.locationSearchService.fuzzySearch(
-        searchLevel,
+      return this.locationSearchService.fuzzySearch(
+        locationLevel,
         query,
-        filterArray,
+        filter,
       );
-      return queryResponse;
     } catch (error) {
+      this.logger.error(error)
       throw new HttpException(error.name, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
