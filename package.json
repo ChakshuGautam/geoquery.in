@@ -40,6 +40,7 @@
     "fuse.js": "^7.0.0",
     "multer": "^1.4.5-lts.1",
     "reflect-metadata": "^0.1.13",
+    "request-ip": "^3.3.0",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
@@ -47,8 +48,10 @@
     "@samagra-x/schematics": "0.0.5",
     "@samagra-x/stencil-cli": "0.0.5",
     "@types/express": "^4.17.17",
+    "@types/fastify-multipart": "^0.7.0",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.3.1",
+    "@types/request-ip": "^0.0.41",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
