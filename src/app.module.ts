@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { CityModule } from './modules/city/city.module';
 import { GeorevModule } from './modules/georev/georev.module';
 import { LocationModule } from './modules/location/location.module';
+import { PrismaModule } from './modules/prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { config } from './config/config';
 import { AppController } from './app.controller';
@@ -12,6 +13,7 @@ import { AppService } from './app.service';
     CityModule,
     GeorevModule,
     LocationModule,
+    PrismaModule,
     ConfigModule.forRoot({
       envFilePath: `.env`,
       load: [config],
