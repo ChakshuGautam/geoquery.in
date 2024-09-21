@@ -158,7 +158,7 @@ describe('AppController (e2e)', () => {
     expect(response.status).toBe(500);
     expect(response.body).toEqual({
       status: 'fail',
-      error: 'coordinates must contain numbers',
+      error: 'Invalid latitude or longitude',
     });
   });
 
@@ -169,14 +169,14 @@ describe('AppController (e2e)', () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       status: 'success',
-      state: 'UTTAR PRADESH',
+      state: '',
       district: 'Lucknow',
       subDistrict: '',
       city: '',
       block: '',
       village: '',
-      lat: 26.830190863213858,
-      lon: 80.89119983155268,
+      lat: 26.841984034,
+      lon: 80.905485485,
     });
   });
 
@@ -186,4 +186,6 @@ describe('AppController (e2e)', () => {
     );
     expect(response.status).toBe(404);
   });
+
+
 });

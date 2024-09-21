@@ -28,9 +28,9 @@ export const formatGeorevSuccessResponse = (data: any) => {
   logger.log(`GeoRev Success Response: ${JSON.stringify(data)}`);
   return {
     status: 'success',
-    state: data.stname ?? '',
-    district: data.dtname ?? '',
-    subDistrict: data.sdtname ?? '',
+    state: data.state_name ?? '',
+    district: data.district_name ?? '',
+    subDistrict: data.subdistrict_name ?? '',
   };
 };
 
@@ -42,12 +42,12 @@ export const formatCentroidResponse = (
   logger.log(`Centroid Success Response: ${JSON.stringify(data)}`);
   return {
     status: 'success',
-    state: data.stname ?? '',
-    district: data.dtname ?? '',
-    subDistrict: data.sdtname ?? '',
+    state: data.state_name ?? '',
+    district: data.district_name ?? '',
+    subDistrict: data.subdistrict_name ?? '',
     city: '',
     block: '',
-    village: '',
+    village: data.village_name ?? '',
     lat: latitude,
     lon: longitude,
   };
