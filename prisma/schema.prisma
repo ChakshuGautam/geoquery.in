@@ -74,3 +74,11 @@ model Village {
   state_id Int?
   state    State? @relation(fields: [state_id], references: [state_code])
 }
+
+model Place {
+  id       Int     @id @default(autoincrement())
+  name     String
+  type     String
+  tag      String
+  location Unsupported("geometry(Point, 4326)")
+}

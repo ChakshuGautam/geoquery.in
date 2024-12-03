@@ -7,12 +7,14 @@ import { ConfigModule } from '@nestjs/config';
 import { config } from './config/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { PlaceModule } from './modules/place/place.module';
 
 @Module({
   imports: [
     CityModule,
     GeorevModule,
     LocationModule,
+    PlaceModule,
     PrismaModule,
     ConfigModule.forRoot({
       envFilePath: `.env`,

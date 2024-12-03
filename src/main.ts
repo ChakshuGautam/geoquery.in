@@ -24,7 +24,6 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get<number>('port');
   const host = configService.get<string>('host');
-  const method = configService.get<string>('method');
 
   // Register plugins and middleware
   await app.register(multipart);
@@ -46,7 +45,7 @@ async function bootstrap() {
 
   // Start the server
   await app.listen(port, host, (err, address) => {
-    logger.log(`Server running on ${method}://${host}:${port}`);
+    logger.log(`Server running on ${host}:${port}`);
   });
 
   // Log additional information as needed
