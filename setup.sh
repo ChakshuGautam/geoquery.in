@@ -1,7 +1,41 @@
 mkdir ./src/geojson-data
 
+is_wget2_installed() {
+    if command -v wget2 &> /dev/null; then
+        return 0  # wget2 is installed
+    else
+        return 1  # wget2 is not installed
+    fi
+}
+
+if is_wget2_installed; then
+    echo "wget2 is already installed."
+else
+    # Check if the OS is macOS or Linux
+    if [[ "$(uname)" == "Darwin" ]]; then
+        echo "macOS detected. Installing wget2 using Homebrew..."
+        # Check if Homebrew is installed, if not install it
+        if ! command -v brew &> /dev/null; then
+            echo "Homebrew not found. Installing Homebrew..."
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        fi
+        # Install wget2 using Homebrew
+        brew install wget
+    elif [[ "$(uname)" == "Linux" ]]; then
+        echo "Linux detected. Installing wget2 using apt..."
+        # Update package list and install wget2 using apt
+        sudo apt update -y
+        sudo apt install wget2 -y
+        wget2 --help
+    else
+        echo "Unsupported OS detected."
+        exit 1
+    fi
+fi
+
+# curl -o ./db.mmdb -L --fail --compressed https://mmdbcdn.posthog.net
 # getting the latest db.mmdb
-curl -o ./db.mmdb -L --fail --compressed https://mmdbcdn.posthog.net
+wget2 -O db.mmdb https://mmdbcdn.posthog.net
 
 cd ./src
 
@@ -38,13 +72,3 @@ mv ./mh ./maharashtra
 mv ./or ./odisha
 mv ./rj ./rajasthan
 mv ./sk ./sikkim
-
-# Changing PWD back to /src/
-cd ../..
-
-# Updating geoJSON files through script to make them usable in src
-cd ./scripts
-npx ts-node parse.geojson.ts
-
-# Changing PWD back to /server/
-cd - &> /dev/null

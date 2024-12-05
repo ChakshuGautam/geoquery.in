@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// Command for migration: npx prisma migrate dev --name init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+
+  extensions = [postgis(), fuzzystrmatch()]
+}
+
+model State {
+  id          Int                     @id @default(autoincrement())
+  state_code  Int                     @unique
+  state_name  String                  @unique
+  metadata    Json?
+  geometry    Unsupported("geometry")
+  district    District[]
+  subdistrict SubDistrict[]
+  village     Village[]
+}
+
+model District {
+  id            Int                     @id @default(autoincrement())
+  district_code Int                     @unique
+  district_name String
+  geometry      Unsupported("geometry")
+  metadata      Json?
+
+  state_id    Int?
+  state       State?        @relation(fields: [state_id], references: [state_code])
+  subdistrict SubDistrict[]
+  village     Village[]
+}
+
+model SubDistrict {
+  id               Int                     @id @default(autoincrement())
+  subdistrict_code Int                     @unique
+  subdistrict_name String
+  geometry         Unsupported("geometry")
+  metadata         Json?
+
+  district_id Int?
+  district    District? @relation(fields: [district_id], references: [district_code])
+
+  state_id Int?
+  state    State?    @relation(fields: [state_id], references: [state_code])
+  village  Village[]
+}
+
+model Village {
+  id           Int @id @default(autoincrement())
+  village_code Int @default(autoincrement())
+
+  geometry     Unsupported("geometry")
+  village_name String
+  metadata     Json?
+
+  subdistrict_id Int?
+  subdistrict    SubDistrict? @relation(fields: [subdistrict_id], references: [subdistrict_code])
+
+  district_id Int?
+  district    District? @relation(fields: [district_id], references: [district_code])
+
+  state_id Int?
+  state    State? @relation(fields: [state_id], references: [state_code])
+}
+
+model Place {
+  id       Int     @id @default(autoincrement())
+  name     String
+  type     String
+  tag      String
+  location Unsupported("geometry(Point, 4326)")
+}

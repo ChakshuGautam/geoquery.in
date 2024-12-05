@@ -22,9 +22,6 @@ async function bootstrap() {
   const logger = new Logger('Main'); // 'Main' is the context name
 
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('port');
-  const host = configService.get<string>('host');
-  const method = configService.get<string>('method');
 
   // Register plugins and middleware
   await app.register(multipart);
@@ -45,8 +42,8 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   // Start the server
-  await app.listen(port, host, (err, address) => {
-    logger.log(`Server running on ${method}://${host}:${port}`);
+  await app.listen(3000, '0.0.0.0', (err, address) => {
+    logger.log(`Server running on 0.0.0.0:3000`);
   });
 
   // Log additional information as needed

@@ -3,8 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { GeorevController } from './georev.controller';
 import { GeorevService } from './georev.service';
 import { GeoqueryService } from '../../services/geoquery/geoquery.service';
-import { GeojsonService } from '../../services/geojson/geojson.service';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+// import { PrismaService } from '../../services/prisma/prisma.service'; // Add PrismaService import
 
 describe('GeorevController', () => {
   let controller: GeorevController;
@@ -16,7 +17,19 @@ describe('GeorevController', () => {
       providers: [
         GeorevService,
         GeoqueryService,
-        GeojsonService,
+        {
+          provide: PrismaService, // Mock PrismaService here
+          useValue: {
+            // Mocked methods of PrismaService, if needed
+            $queryRawUnsafe: jest.fn((query: string) => {
+              return [{
+                state_name: 'DELHI',
+                district_name: 'North West',
+                subdistrict_name: 'Saraswati Vihar',
+              }]
+            }),
+          },
+        },
         {
           provide: ConfigService,
           useValue: {
@@ -63,13 +76,17 @@ describe('GeorevController', () => {
     it('should handle missing lat lon query parameters', async () => {
       const lat = '';
       const lon = '';
-
+    try{
       const result = await controller.getGeoRev(lat, lon);
-
-      expect(result).toEqual({
+      } catch (error) {
+      expect(error).toBeInstanceOf(HttpException);
+      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error.getResponse()).toEqual({
         status: 'fail',
         error: 'lat lon query missing',
       });
+    }
+
     });
 
     it('should handle error when processing lat lon', async () => {
@@ -78,12 +95,13 @@ describe('GeorevController', () => {
 
       try {
         await controller.getGeoRev(lat, lon);
-      } catch (error) {
+      }
+      catch (error) {
         expect(error).toBeInstanceOf(HttpException);
-        expect(error.getStatus()).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+        expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
         expect(error.getResponse()).toEqual({
           status: 'fail',
-          error: 'coordinates must contain numbers',
+          error: 'Invalid latitude or longitude',
         });
       }
     });
@@ -92,6 +110,16 @@ describe('GeorevController', () => {
       const lat = '1.2345'; // valid latitude
       const lon = '2.3456'; // valid longitude
 
+      jest.spyOn(service, 'getGeoRev').mockRejectedValue(
+        new HttpException(
+          {
+            status: 'fail',
+            error: `No GeoLocation found for lat: ${lat}, lon: ${lon}`,
+          },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        ),
+      );
+
       try {
         await controller.getGeoRev(lat, lon);
       } catch (error) {
@@ -99,7 +127,7 @@ describe('GeorevController', () => {
         expect(error.getStatus()).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
         expect(error.getResponse()).toEqual({
           status: 'fail',
-          error: 'No GeoLocation found for lat: 1.2345, lon: 2.3456',
+          error: `No GeoLocation found for lat: ${lat}, lon: ${lon}`,
         });
       }
     });

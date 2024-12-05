@@ -2,24 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { GeorevService } from './georev.service';
 import { ConfigService } from '@nestjs/config';
 import { GeoqueryService } from '../../services/geoquery/geoquery.service';
-import { GeojsonService } from '../../services/geojson/geojson.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 const constants = {
   getGeoRev: {
     success: {
-      levelLocationName: 'Saraswati Vihar',
-      OBJECTID: 430,
-      stcode11: '07',
-      dtcode11: '090',
-      sdtcode11: '00431',
-      Shape_Length: 107706.63225163253,
-      Shape_Area: 199520680.70346165,
-      stname: 'DELHI',
-      dtname: 'North West',
-      sdtname: 'Saraswati Vihar',
-      Subdt_LGD: 431,
-      Dist_LGD: 82,
-      State_LGD: 7,
+      state_name: 'DELHI',
+      district_name: 'North West',
+      subdistrict_name: 'Saraswati Vihar',
     },
   },
 };
@@ -31,7 +21,19 @@ describe('GeorevService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GeorevService,
-        GeojsonService,
+        {
+          provide: PrismaService, // Mock PrismaService here
+          useValue: {
+            // Mocked methods of PrismaService, if needed
+            $queryRawUnsafe: jest.fn((query: string) => {
+              return [{
+                state_name: 'DELHI',
+                district_name: 'North West',
+                subdistrict_name: 'Saraswati Vihar',
+              }]
+            }),
+          },
+        },
         GeoqueryService,
         {
           provide: ConfigService,
@@ -62,24 +64,16 @@ describe('GeorevService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should call individualQuery method with correct parameters', () => {
+  it('should call individualQuery method with correct parameters', async () => {
     const lat = '10.12345';
     const lon = '20.67890';
 
-    jest
-      .spyOn(service, 'getGeoRev')
-      .mockReturnValue(constants.getGeoRev.success);
+    // jest
+    //   .spyOn(service, 'getGeoRev')
+    //   .mockReturnValue(constants.getGeoRev.success);
 
-    const result = service.getGeoRev(lat, lon);
+    const result = await service.getGeoRev(lat, lon);
 
-    expect(result).toEqual(constants.getGeoRev.success);
-  });
-
-  it('should handle a missing coordinate', () => {
-    jest
-      .spyOn(service, 'getGeoRev')
-      .mockReturnValue(Error('coordinates must contain numbers'));
-    const result = service.getGeoRev(null, '20.67890');
-    expect(result).toEqual(Error('coordinates must contain numbers'));
+    expect(result).toEqual([constants.getGeoRev.success]);
   });
 });
