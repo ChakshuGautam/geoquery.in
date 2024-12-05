@@ -25,7 +25,7 @@ export class GeorevController {
         this.logger.error(`lat lon query missing`);
         throw new HttpException(
           { status: 'fail', error: `lat lon query missing` },
-          HttpStatus.INTERNAL_SERVER_ERROR,
+          HttpStatus.BAD_REQUEST,
         );
       }
 
@@ -33,7 +33,7 @@ export class GeorevController {
         this.logger.error('Invalid latitude or longitude');
         throw new HttpException(
           { 'status': 'fail', 'error': 'Invalid latitude or longitude' },
-          HttpStatus.INTERNAL_SERVER_ERROR,
+          HttpStatus.BAD_REQUEST,
         );
       }
 

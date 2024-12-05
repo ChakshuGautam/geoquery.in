@@ -80,7 +80,7 @@ describe('GeorevController', () => {
       const result = await controller.getGeoRev(lat, lon);
       } catch (error) {
       expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
       expect(error.getResponse()).toEqual({
         status: 'fail',
         error: 'lat lon query missing',
@@ -98,7 +98,7 @@ describe('GeorevController', () => {
       }
       catch (error) {
         expect(error).toBeInstanceOf(HttpException);
-        expect(error.getStatus()).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+        expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
         expect(error.getResponse()).toEqual({
           status: 'fail',
           error: 'Invalid latitude or longitude',
