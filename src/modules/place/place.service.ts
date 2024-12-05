@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { CreatePlaceDto, SearchPlaceDto } from "./dto/place.dto";
 import { PrismaService } from "../prisma/prisma.service";
 
@@ -12,12 +12,16 @@ export class PlaceService {
         const { name, type, tag, lat, lon } = createPlaceDto;
         const point = `ST_SetSRID(ST_MakePoint(${lon}, ${lat}), 4326)`;
         this.logger.debug(`Adding place ${createPlaceDto}`)
-        return this.prisma.$executeRawUnsafe(
-            `INSERT INTO "Place" (name, type, tag, location) VALUES ($1, $2, $3, ${point})`,
-            name,
-            type,
-            tag,
-        );
+        try {
+            return this.prisma.$executeRawUnsafe(
+                `INSERT INTO "Place" (name, type, tag, location) VALUES ($1, $2, $3, ${point})`,
+                name,
+                type,
+                tag,
+            );
+        } catch (error) {
+            throw new HttpException('Error adding places', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     async searchPlaces(searchPlaceDto: SearchPlaceDto): Promise<any> {
@@ -46,7 +50,11 @@ export class PlaceService {
             query += ` AND type ILIKE '%${type}%'`;
         }
 
-        // Execute the query
-        return this.prisma.$queryRawUnsafe(query);
+        try {
+            // Execute the query
+            return this.prisma.$queryRawUnsafe(query);
+        } catch (error) {
+            throw new HttpException('Error querying database', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

@@ -78,6 +78,3 @@ cd ../..
 # Updating geoJSON files through script to make them usable in src
 cd ./scripts
 npx ts-node parse.geojson.ts
-npx ts-node ingestors/state.geojson.ts
-npx ts-node ingestors/district.geojson.ts
-npx ts-node ingestors/subdistrict.geojson.ts
